@@ -1,0 +1,22 @@
+<template>
+    <view class="pagebackground">
+        <shopCart :List.sync="list"></shopCart>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import ShopCart from '../components/shop_cart'
+    export default class TestShopItemList extends wepy.page{
+        data = {
+            list:[{img:'../images/img10.jpg',shop_name:'日本肌美面膜',price_gs:12,price_totle:200,weight:150,id:1,num:1,ischecked:0},
+                {img:'../images/img11.jpg',shop_name:'hhhhh',price_gs:1,price_totle:33,weight:200,id:2,num:1,ischecked:0}],
+        }
+        components = {
+            shopCart: ShopCart
+        }
+    }
+</script>
+<style lang="less">
+.pagebackground{
+}
+</style>

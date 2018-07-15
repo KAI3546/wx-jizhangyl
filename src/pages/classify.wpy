@@ -1,0 +1,163 @@
+<template>
+    <view class="top_search">
+        <image class='logo_img' src="../images/logo.png"></image>
+        <view class="search_input">
+            <icon class="icon_style" type="search" size="15" color="#e3e3e3"></icon>
+        </view>
+
+        <i class="text_font">搜索</i>
+    </view>
+    <view class="classify_style" style="height:{{windowHeight-100}}px">
+        <scroll-view class="left_classify" scroll-y scroll-with-animation="true">
+            <view class="name {{item.active? 'active':''}}" wx:for="{{rootcateList}}" wx:key="item" @tap="changeCate" data-code="{{item.code}}"><text class="classify_name">{{item.name}}</text></view>
+        </scroll-view>
+        <scroll-view class="right_classify" scroll-y scroll-with-animation="true">
+            <view class="child_shop" wx:for="{{childcateList}}" wx:for-item="item" wx:key="index">
+                <image class="shop_img" src="{{item.img}}"></image>
+                <view class="shop_name">{{item.name}}</view>
+                <view class="shop_price">关税:￥{{item.price}} 供货价:￥{{item.price}}</view>
+            </view>
+        </scroll-view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class  Classify extends wepy.page {
+    config = {
+        navigationBarTitleText: '分类页面',
+    }
+    components = {
+
+    }
+
+    async getChildCate(code){
+        console.log('2222222222');
+        for(var i=0; i <this.demodate.length;i++){
+            if(this.demodate[i].code == code){
+                this.childcateList = this.demodate[i].list;
+            }
+        }
+        this.$apply();
+    }
+
+    data = {
+        list:{},
+        rootcateList:[{name:'面膜',code:1,active:true},{name:'护肤',code:2,active:false},{name:'彩妆',code:3,active:false}],
+        childcateList:{},
+        demodate:[{code:1,list:[{img:'../images/img11.jpg',name:'日本肌美面膜',price:12},{img:'../images/img10.jpg',name:'日本肌美面膜',price:122},{img:'../images/img9.jpg',name:'日本肌美面膜',price:122}]},
+            {code:2,list:[{img:'../images/img7.jpg',name:'日本肌美护肤',price:19}]},
+            {code:3,list:[{img:'../images/img8.jpg',name:'日本肌美彩妆',price:30}]}]//测试数据
+    }
+    onLoad() {
+        this.getChildCate(1);
+    }
+    methods = {
+        //设置一级分类选中状态
+        changeCate(e){
+            let code = e.currentTarget.dataset.code;
+            console.log('code===='+code);
+            console.log(this.demodate[0]);
+            //根据code获取二级分类里面的商品信息
+            this.getChildCate(code);
+            for(var i = 0; i<this.rootcateList.length; i++){
+                var rootCate = this.rootcateList[i];
+                rootCate.active = false;
+                if(rootCate.code == code){
+                    rootCate.active = true;
+                }
+            }
+        }
+    }
+}
+</script>
+<style lang="less">
+.top_search {
+    width: 100%;
+    background-color: black;
+    height: 100rpx;
+    font-size: 30rpx;
+
+}
+.logo_img {
+    height: 60rpx;
+    width: 60rpx;
+    margin: 20rpx 20rpx 20rpx 30rpx;
+}
+.search_input {
+    position: absolute;
+    margin: -80rpx 0 0 120rpx;
+    width: 500rpx;
+    height: 50rpx;
+    background-color: #b9b9b9;
+    border-radius: 17rpx;
+}
+.icon_style {
+    float: right;
+    margin-top: 10rpx;
+    margin-right: 15rpx;
+}
+.text_font {
+    font-size: 25rpx;
+    color : #e6e6e6;
+    position: absolute;
+    margin: 35rpx 20rpx auto 550rpx;
+}
+.classify_style {
+    display: flex;
+    position: relative;
+    height: 1400rpx;
+    .left_classify{
+        text-align: center;
+        width: 200rpx;
+        height: 1400rpx;
+        background-color: #f1f0f1;
+        .name {
+            width: 130rpx;
+            margin-top:20rpx;
+            margin-bottom: 10rpx;
+            margin-left: 10rpx;
+            font-size: 34rpx;
+            font-weight: 590;
+            letter-spacing: 20rpx;
+        }
+        .classify_name {
+            margin-left: 23rpx;
+        }
+        .active {
+            color: white;
+            background-color: black;
+            border-radius: 25rpx;
+        }
+    }
+    .right_classify{
+        height: 1400rpx;
+        padding: 10px 5px 10px 10px;
+        background-color: white;
+        .child_shop{
+            float: left;
+            position: relative;
+            width: 250rpx;
+            margin-right: 20rpx;
+            margin-bottom: 15rpx;
+            .shop_img{
+                height: 250rpx;
+                width: 250rpx;
+                border-style: solid;
+                border-color: #000011;
+                border-width: 5rpx;
+            }
+            .shop_name{
+                text-align: center;
+                font-size: 25rpx;
+                font-weight: 800;
+            }
+            .shop_price{
+                text-align: center;
+                font-size: 22rpx;
+            }
+        }
+    }
+}
+
+</style>

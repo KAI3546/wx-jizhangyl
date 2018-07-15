@@ -1,0 +1,20 @@
+<template>
+  <view>
+    <shopItemList :goodsList.sync="list"></shopItemList>
+  </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import ShopItemList from '../components/shop_item_list'
+    export default class Index extends wepy.page{
+        data = {
+            list:[{img:'../images/img7.jpg',shop_name:'日本肌美精面膜',price_gs:12,price_totle:200},
+                {img:'../images/img8.jpg',shop_name:'日本肌美精面膜',price_gs:1,price_totle:33},
+                {img:'../images/img9.jpg',shop_name:'日本肌美精面膜',price_gs:12,price_totle:313}],
+            num:1,
+        }
+        components = {
+            shopItemList: ShopItemList
+        }
+    }
+</script>

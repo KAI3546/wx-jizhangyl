@@ -1,0 +1,42 @@
+<template>
+<repeat for="{{ goodsList }}" key="index" index="index" item="item">
+    <view class="shopimg">
+        <view><image src="{{item.img}}"></image></view>
+        <view class="title">{{item.shop_name}}</view>
+        <view class="price">关税: ￥{{item.price_gs}}  供货价: ￥{{item.price_totle}}</view>
+    </view>
+</repeat>
+</template>
+<script>
+import wepy from 'wepy'
+export default class ShopItemList extends wepy.component{
+
+    props = {
+        goodsList: {
+            default: []
+        }
+    }
+}
+
+</script>
+<style lang="less">
+.shopimg {
+    margin: 20rpx 20rpx 10rpx 20rpx;
+    float: left;
+    text-align: center;
+    image {
+        height:320rpx;
+        width: 320rpx;
+        border-style: solid;
+        border-color: #000011;
+        border-width: 5rpx;
+    }
+}
+.title {
+    font-size: 25rpx;
+    font-weight: 800;
+}
+.price {
+    font-size: 22rpx;
+}
+</style>
