@@ -1,6 +1,30 @@
 <template>
-  <view>
+  <view class="background_color">
+  <view class="top_search">
+  <image class='logo_img' src="../images/logo.png"></image>
+  <view class="search_input">
+    <icon class="icon_style" type="search" size="15" color="#e3e3e3"></icon>
+  </view>
+  <i class="text_font">搜索</i>
+  </view>
+  <swiper class="banner_style" indicator-dots="true" autoplay="true">
+    <swiper-item class="swiper_item">
+      <image src="../images/img8.jpg" class="swiper_image"></image>
+    </swiper-item>
+      <swiper-item class="swiper_item">
+          <image src="../images/img9.jpg" class="swiper_image"></image>
+      </swiper-item>
+      <swiper-item class="swiper_item">
+          <image src="../images/img7.jpg" class="swiper_image"></image>
+      </swiper-item>
+  </swiper>
+  <view class="app_info">
+      <view class="app_introduce">新品</view>
+  </view>
+  <view class="shop_list">
+    <view class="shop_recommend"><view class="recommend">推荐商品</view><image class="image_style" src="../images/right.png"></image></view>
     <shopItemList :goodsList.sync="list"></shopItemList>
+  </view>
   </view>
 </template>
 <script>
@@ -18,3 +42,108 @@
         }
     }
 </script>
+<style lang="less">
+    .background_color{
+    }
+  .top_search {
+    width: 100%;
+    background-color: black;
+    height: 100rpx;
+    font-size: 30rpx;
+    position:fixed;
+    top:0;
+    width: 100%;
+    z-index: 999;
+  }
+  .logo_img {
+    height: 60rpx;
+    width: 60rpx;
+    margin: 20rpx 20rpx 20rpx 30rpx;
+  }
+  .search_input {
+    position: absolute;
+    margin: -80rpx 0 0 120rpx;
+    width: 500rpx;
+    height: 50rpx;
+    background-color: #b9b9b9;
+    border-radius: 17rpx;
+  }
+  .icon_style {
+    float: right;
+    margin-top: 10rpx;
+    margin-right: 15rpx;
+  }
+  .text_font {
+    font-size: 25rpx;
+    color : #e6e6e6;
+    position: absolute;
+    margin: 35rpx 20rpx auto 550rpx;
+  }
+  .banner_style{
+    margin-top: 100rpx;
+    width: 100%;
+    height: 370rpx;
+    z-index: 1;
+    background-color: green;
+      .swiper_image{
+          width: 100%;
+          height: 100%;
+      }
+  }
+  .app_info{
+    height: 200rpx;
+    width: 100%;
+  }
+    .app_introduce{
+        height: 180rpx;
+        margin-top: 15rpx;
+        margin-right: 12rpx;
+        margin-left: 12rpx;
+        border-radius: 5rpx;
+        border-style: solid;
+        border-color: black;
+        border-width: 5rpx;
+        line-height: 180rpx;
+        text-align: center;
+        font-size: 44rpx;
+        font-weight: 500;
+    }
+    .shop_list{
+        background-color: #f7f7f7;
+        height: 100%;
+        overflow: hidden;
+    }
+    .test2{
+        background-color: yellow;
+        width: 100%;
+    }
+    .test1{
+        background-color: blue;
+        height: 100rpx;
+    }
+    .shop_recommend{
+        margin-top:5rpx;
+        border-bottom-width: 3rpx;
+        border-bottom-style: solid;
+        border-bottom-color: #cdcdcd;
+        border-top-width: 3rpx;
+        border-top-style: solid;
+        border-top-color: #cdcdcd;
+        background-color: #f7f7f7f7;
+        width: 100%;
+        height: 60rpx;
+        text-align: inherit;
+        line-height: 60rpx;
+        .recommend{
+            float: left;
+            margin-left:15rpx;
+            font-size: 30rpx;
+            font-weight: 500;
+        }
+        .image_style{
+            margin-top: 16rpx;
+            width: 30rpx;
+            height: 30rpx;
+        }
+    }
+</style>

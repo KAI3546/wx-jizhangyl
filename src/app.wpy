@@ -20,7 +20,8 @@ export default class extends wepy.app {
       'pages/index',
       'pages/classify',
       'pages/cart',
-      'pages/my'
+      'pages/my',
+      'pages/test'
 //      'pages/home',
 //      'pages/shop_cart',
 //      'pages/info'
@@ -37,7 +38,7 @@ export default class extends wepy.app {
           "backgroundColor": "#000000",
           "borderStyle": "black",
           "list": [{
-              "pagePath": "pages/classify",
+              "pagePath": "pages/index",
               "text": "首页",
               "iconPath": "images/home.png",
               "selectedIconPath": "images/home@.png"

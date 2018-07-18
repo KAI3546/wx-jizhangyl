@@ -1,7 +1,7 @@
 <template>
     <view class="shop_top"><image class="top_img" src="../images/shop.png"></image><text class="top_name">日本东京直邮</text><image class="top_img top_img2" src="../images/point.png"></image></view>
     <view class="shopstyle">
-        <repeat for="{{List}}" key="index" index="index" item="item">
+        <repeat for="{{list}}" key="index" index="index" item="item">
             <view class="shop_1">
                 <swipeDelete :swipeData="item" @delItem.user="handleDelItem">
                     <view class="shop_2">
@@ -58,20 +58,24 @@ export default class ShopCart extends wepy.component{
             default: []
         }
     }
+    data = {
+        list:[{img:'../images/img10.jpg',shop_name:'日本肌美面膜',price_gs:12,price_totle:200,weight:150,id:1,num:1,ischecked:0},
+{img:'../images/img11.jpg',shop_name:'hhhhh',price_gs:1,price_totle:33,weight:200,id:2,num:1,ischecked:0}]
+    }
     methods = {
         handleDelItem(e){
             //执行删除操作
             console.log(e);
             console.log(this.List[0])
-            for(var i = 0;i<this.List.length;i++){
+            for(var i = 0;i<this.list.length;i++){
                 console.log('i='+i)
-               if(this.List[i].id == e.id){
+               if(this.list[i].id == e.id){
                     console.log('删除的下标是'+i+'  zhi==');
-                    console.log(this.List[i])
-                    delete this.List[i]
+                    console.log(this.list[i])
+                    delete this.list[i]
                 }
             }
-            this.List = this.List
+            this.$apply();
         },
         jiaBtnTap(e){
             var id = e.currentTarget.dataset.id;
@@ -152,22 +156,21 @@ export default class ShopCart extends wepy.component{
             }
             .shop_name{
                 position: absolute;
-                margin: -160rpx 0 0 300rpx;
+                margin: -160rpx 0 0 270rpx;
                 font-size: 32rpx;
                 font-weight: 600;
             }
             .shop_price{
                 position: absolute;
-                margin: -110rpx 0 0 300rpx;
+                margin: -110rpx 0 0 270rpx;
                 font-size: 30rpx;
             }
             .shop_weight{
                 position: absolute;
-                margin: -65rpx 0 0 300rpx;
+                margin: -65rpx 0 0 270rpx;
                 font-size: 30rpx;
             }
             .buy-num{
-                position: absolute;
                 overflow:hidden;
                 font-size: 37rpx;
                 width: 150rpx;
@@ -176,7 +179,7 @@ export default class ShopCart extends wepy.component{
                 .jian-btn{
                     float: left;
                     width: 35rpx;
-                    height: 52rpx;
+                    height: 54rpx;
                     border-left: 1rpx solid #ccc;
                     border-bottom: 1rpx solid #ccc;
                     border-top: 1rpx solid #ccc;
@@ -184,22 +187,22 @@ export default class ShopCart extends wepy.component{
                     border-top-left-radius: 6rpx;
                 }
                 .shop_num{
+                    float: left;
                     font-size: 35rpx;
-                    height: 100%;
+                    height: 54rpx;
                     border-style: solid;
                     border-color:#ccc;
                     border-width: 1rpx;
                 }
                 .jia-btn{
                     width: 35rpx;
-                    height: 52rpx;
+                    height: 54rpx;
                     float: left;
                     border-right: 1rpx solid #ccc;
                     border-bottom: 1rpx solid #ccc;
                     border-top: 1rpx solid #ccc;
                     border-bottom-right-radius: 6rpx;
                     border-top-right-radius: 6rpx;
-                    margin:-55rpx 0 0 97rpx;
                 }
                 .disabled{
                     background-color: #f5f5f9;

@@ -47,6 +47,12 @@
 					"name": "我的界面",
 					"pathName": "pages/my",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "测试模块",
+					"pathName": "pages/test",
+					"query": ""
 				}
 			]
 		}

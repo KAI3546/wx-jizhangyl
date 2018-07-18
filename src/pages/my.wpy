@@ -9,8 +9,8 @@
             <view class="vip_qy">查看权益</view>
         </view>
         <view class="top_addr">
-            <view class="addr_info">地址管理</view>
-            <view class="personal_code">个人邀请码: 666666</view>
+            <view class="addr_info">个人邀请码: 666666</view>
+            <view class="personal_code">地址管理</view>
         </view>
     </view>
     <view class="app_info">
@@ -118,7 +118,7 @@
 import wepy from 'wepy'
 
 export default class My extends wepy.page{
-    
+
 }
 </script>
 <style lang="less">
@@ -191,17 +191,17 @@ export default class My extends wepy.page{
         margin-top: 10rpx;
         text-align: center;
         font-size: 33rpx;
-        width: 250rpx;
+        width: 300rpx;
         font-weight: 500;
         font-family: "Fira Code";
-        text-decoration: underline;
     }
     .personal_code{
         float: left;
         margin-top: 13rpx;
         text-align: center;
-        width: 300rpx;
+        width: 180rpx;
         font-size: 30rpx;
+        text-decoration: underline;
     }
     .app_introduce{
         margin-top: 15rpx;

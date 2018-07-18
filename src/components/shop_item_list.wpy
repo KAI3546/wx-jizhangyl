@@ -1,4 +1,5 @@
 <template>
+
 <repeat for="{{ goodsList }}" key="index" index="index" item="item">
     <view class="shopimg">
         <view><image src="{{item.img}}"></image></view>
@@ -6,6 +7,7 @@
         <view class="price">关税: ￥{{item.price_gs}}  供货价: ￥{{item.price_totle}}</view>
     </view>
 </repeat>
+
 </template>
 <script>
 import wepy from 'wepy'
@@ -20,16 +22,26 @@ export default class ShopItemList extends wepy.component{
 
 </script>
 <style lang="less">
+.total_style{
+    background-color: #f7f7f7;
+    width: 100%;
+    overflow:hidden
+}
 .shopimg {
-    margin: 20rpx 20rpx 10rpx 20rpx;
+    margin: 10rpx 20rpx 10rpx 20rpx;
     float: left;
     text-align: center;
+    height:400rpx;
+    width: 330rpx;
+    background-color: white;
     image {
-        height:320rpx;
-        width: 320rpx;
+        height:300rpx;
+        width: 300rpx;
         border-style: solid;
         border-color: #000011;
         border-width: 5rpx;
+        margin-top:5rpx;
+        border-radius:7rpx
     }
 }
 .title {
