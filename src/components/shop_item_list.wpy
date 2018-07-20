@@ -1,11 +1,13 @@
 <template>
 
 <repeat for="{{ goodsList }}" key="index" index="index" item="item">
+    <navigator url="/pages/shop_detail">
     <view class="shopimg">
         <view><image src="{{item.img}}"></image></view>
         <view class="title">{{item.shop_name}}</view>
         <view class="price">关税: ￥{{item.price_gs}}  供货价: ￥{{item.price_totle}}</view>
     </view>
+    </navigator>
 </repeat>
 
 </template>

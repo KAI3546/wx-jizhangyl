@@ -190,7 +190,7 @@ export default class My extends wepy.page{
         float: left;
         margin-top: 10rpx;
         text-align: center;
-        font-size: 33rpx;
+        font-size: 31rpx;
         width: 300rpx;
         font-weight: 500;
         font-family: "Fira Code";

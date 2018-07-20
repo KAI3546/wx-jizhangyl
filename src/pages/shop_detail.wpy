@@ -1,0 +1,215 @@
+<template>
+    <view class="shop_detail">
+        <view class="shop_img">
+            <image src="../images/img11.jpg" class="image_style"></image>
+        </view>
+        <view class="shop_name">日本CPB精华肌底液</view>
+        <view class="shop_info"><view class="title1">市场零售价:</view><view class="title2">￥255</view></view>
+        <view class="shop_info"><view class="title1">供货价:</view><view class="title2">￥356</view></view>
+        <view class="shop_info"><view class="title1">关税:</view><view class="title2">￥11</view></view>
+        <view class="shop_info"><view class="title1">供货价+关税:</view><view class="title2">￥367</view></view>
+        <view class="shop_info"><view class="title1">打包重量:</view><view class="title2">300g</view></view>
+        <view class="shop_tip">（非商品实际重量，根据商品体积等综合计算得出）</view>
+    </view>
+    <view class="shop_content">
+        <view class="info_name">朋友圈文案:</view>
+        <view class="info_content">“CPB夜用霜~超级好用的面霜！在我心里面霜排行前三！成分中添加水解丝成分，触感特别柔软而细腻，几百块的面霜有这种水准非常令我吃惊！！！效果方面，用后皮肤很水润，细腻，皮肤会越发平滑，修复效果很棒”</view>
+        <view class="info_copy">点击复制</view>
+    </view>
+    <view class="shop_list">
+        <view class="{{show_status?'choice_jsname':'shop_jsname'}}" bindtap="choiceStatus" data-index='1'>图文素材</view>
+        <view class="{{show_status?'shop_jsname':'choice_jsname'}}" bindtap="choiceStatus" data-index='0'>参数规格</view>
+    </view>
+    <view class="image_list" wx:if="{{show_status}}">
+        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
+    </view>
+    <view class="format_info" wx:if="{{!show_status}}">
+        <view class="title_name1 no1">品牌</view>
+        <view class="title_name2 no1">CPB</view>
+        <view class="title_name1">产地</view>
+        <view class="title_name2">日本</view>
+        <view class="title_name1">分类</view>
+        <view class="title_name2">面霜</view>
+        <view class="title_name1">净含量</view>
+        <view class="title_name2">125ml</view>
+        <view class="title_name1">保质期</view>
+        <view class="title_name2">3年</view>
+        <view class="title_name1">功效</view>
+        <view class="title_name2">补水保湿</view>
+        <view class="title_name1">适用肌肤</view>
+        <view class="title_name2">任何肌肤</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class ShopDetail extends wepy.page{
+    data={
+        show_status:1
+    }
+    methods={
+        choiceStatus(e){
+            let title = e.currentTarget.dataset.index;
+            title=='0'?this.show_status=0:this.show_status=1;
+        }
+    }
+    config = {
+        navigationBarTitleText: '商品详情',
+    }
+}
+</script>
+<style lang="less">
+    .shop_detail{
+        margin-top: 10rpx;
+        width: 100%;
+        overflow: hidden;
+    }
+    .shop_img{
+        height: 550rpx;
+        width: 550rpx;
+        margin: 0 auto;
+    }
+    .image_style{
+        height: 100%;
+        width: 100%;
+        border: solid black 5rpx;
+    }
+    .shop_name{
+        margin-top: 10rpx;
+        font-weight: 600;
+        text-align: center;
+    }
+    .shop_info{
+        font-size: 37rpx;
+
+
+        .title1{
+            width: 225rpx;
+            float: left;
+            margin-left: 210rpx;
+        }
+    }
+    .shop_tip{
+        font-size: 22rpx;
+        text-align: center;
+    }
+    .shop_content{
+        margin-top: 5rpx;
+        overflow: hidden;
+        width: 100%;
+        background-color: #f3f3f3;
+    }
+    .info_name{
+        margin-left: 8rpx;
+        height: 45rpx;
+        width: 160rpx;
+        font-size: 28rpx;
+    }
+    .info_content{
+        margin: 0 auto;
+        width: 650rpx;
+        font-size: 25rpx;
+    }
+    .info_copy{
+        background-color: #ff0000;
+        color: white;
+        height: 35rpx;
+        width: 140rpx;
+        font-size: 28rpx;
+        line-height: 35rpx;
+        text-align: center;
+        margin-top: 8rpx;
+        margin-left: 560rpx;
+        margin-bottom: 8rpx;
+        border-style: solid;
+        border-width: 1rpx;
+        border-color: #ff0000;
+        border-radius: 12rpx;
+    }
+    .choice_jsname{
+        width: 373rpx;
+        height: 70rpx;
+        background-color: black;
+        float: left;
+        border-right-color: white;
+        border-right-style: solid;
+        border-right-width: 1rpx;
+        text-align: center;
+        line-height: 70rpx;
+        color: white;
+        font-size: 28rpx;
+        font-weight: 600;
+        border-radius: 2rpx;
+    }
+    .shop_jsname{
+        width: 373rpx;
+        height: 66rpx;
+        background-color: white;
+        float: left;
+        border-right-color: white;
+        border-right-style: solid;
+        border-right-width: 1rpx;
+        border-bottom-color: black;
+        border-bottom-style: solid;
+        border-bottom-width: 4rpx;
+        text-align: center;
+        line-height: 70rpx;
+        color: black;
+        font-size: 28rpx;
+        font-weight: 600;
+    }
+    .image_list{
+        width: 100%;
+        overflow: hidden;
+    }
+    .shop_list_image{
+        float: left;
+        width: 50%;
+        height: 370rpx;
+    }
+    .imagelist{
+        width: 350rpx;
+        height: 350rpx;
+        margin-top: 10rpx;
+        margin-left: 10rpx;
+        border: solid black 4rpx;
+        border-radius: 4rpx;
+    }
+    .format_info{
+        font-size: 28rpx;
+        font-weight: 400;
+        margin-top: 80rpx;
+        overflow: hidden;
+        width: 100%;
+        color: #4d4d4d;
+
+    }
+    .title_name1{
+        margin-left: 20rpx;
+        width: 160rpx;
+        height: 60rpx;
+        float: left;
+        border-left: solid #dddddd 3rpx;
+        border-bottom: solid #dddddd 3rpx;
+        border-right: solid #dddddd 3rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        font-weight: 400;
+        text-align: center;
+    }
+    .title_name2{
+        float: left;
+        width: 540rpx;
+        height: 60rpx;
+        border-bottom: solid #dddddd 3rpx;
+        border-right: solid #dddddd 3rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        font-weight: 400;
+        text-align: center;
+    }
+    .no1{
+        border-top: solid #dddddd 3rpx;
+    }
+</style>

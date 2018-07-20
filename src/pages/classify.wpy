@@ -13,9 +13,11 @@
         </scroll-view>
         <scroll-view class="right_classify" scroll-y scroll-with-animation="true">
             <view class="child_shop" wx:for="{{childcateList}}" wx:for-item="item" wx:key="index">
+                <navigator url="/pages/shop_detail">
                 <image class="shop_img" src="{{item.img}}"></image>
                 <view class="shop_name">{{item.name}}</view>
                 <view class="shop_price">关税:￥{{item.price}} 供货价:￥{{item.price}}</view>
+                </navigator>
             </view>
         </scroll-view>
     </view>

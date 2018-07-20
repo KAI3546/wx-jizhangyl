@@ -21,7 +21,8 @@ export default class extends wepy.app {
       'pages/classify',
       'pages/cart',
       'pages/my',
-      'pages/test'
+      'pages/test',
+        'pages/shop_detail'
 //      'pages/home',
 //      'pages/shop_cart',
 //      'pages/info'
