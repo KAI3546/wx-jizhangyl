@@ -1,0 +1,566 @@
+<template>
+    <view class="shop_top"><image class="top_img" src="../images/shop.png"></image><text class="top_name">日本东京直邮</text><image class="top_img top_img2" src="../images/point.png"></image></view>
+    <scroll-view class="shopstyle" scroll-y scroll-with-animation="true" style="height:{{windowHeight-150}}px">
+        <repeat for="{{shopCartList}}" key="index" index="index" item="item">
+            <view class="shop_1">
+                <swipeDelete :swipeData="item" @delItem.user="handleDelItem">
+                    <view class="shop_2">
+                        <view  @tap.stop="selectTap" data-index="{{index}}" data-id="{{item.id}}">
+                        <icon class='icon_style' type="success" size="20" color="{{item.productStatus?'green':'rgb(153,153,153)'}}"/>
+                        <image class="shop_img" src="{{url+item.shopImage}}"></image>
+                        </view>
+                        <view class="shop_name">{{item.productName}}</view>
+                        <view class="shop_price">关税:￥{{item.bcCprice}}  供货价:￥{{item.shopGprice}}</view>
+                        <view class="shop_weight">重量:{{item.shopDweight}}</view>
+                        <view class="buy-num">
+                            <view class="jian-btn {{item.productQuantity==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{item.productQuantity}}" data-id="{{item.id}}">-</view>
+                            <input type="number" class="shop_num" style="width: 60rpx" value="{{item.productQuantity}}" disabled/>
+                            <view class="jia-btn {{item.productQuantity==999? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{item.productQuantity}}" data-id="{{item.id}}">+</view>
+                        </view>
+                    </view>
+                </swipeDelete>
+            </view>
+        </repeat>
+    </scroll-view>
+    <view class="totalInfo">
+        <view class="Info">货值: ￥{{totalPriceShop}}</view>
+        <view class="Info1">关税: ￥{{totalPriceGs}}</view>
+        <view class="Info">重量: {{totalWeight}}g</view>
+        <view class="Info1">运费: ￥{{totalPriceYf}} ({{weightPrice}}x35/kg)</view>
+    </view>
+    <view class="jiesuan-box">
+        <view class="left-price">
+            <view @tap.stop="selectAll" class="all_select_box">
+                <icon type="success" size="20" color="{{allChecked?'green':'rgb(153,153,153)'}}" />
+                <view class="all_select">全选</view>
+            </view>
+            <view class="total" hidden="{{noSelect}}">合计：¥ {{totalPrice}}</view>
+        </view>
+        <view class="to-pay-btn {{noSelect?'no-select':''}}"  bindtap="toPayOrder">去结算</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+import tip from '@/utils/tip'
+import {
+    HOST_URL,
+    IMG_URL
+} from '@/utils/constant';
+import swipeDelete from './swiperDelete'
+
+export default class ShopCart extends wepy.component{
+    components = {
+        swipeDelete
+    }
+    data={
+        shopCartList:[],
+//        totalPrice:400,
+        totalWeight:0,
+        totalPriceGs:0,
+        totalPriceShop:0,
+//        totalPriceYf:35,
+        allChecked:false,
+        windowHeight:0,
+        url:IMG_URL
+    }
+    computed = {
+        totalPriceShop(){
+            let totalPrice = 0
+            for(var i = 0;i<this.shopCartList.length;i++) {
+                if (this.shopCartList[i].productStatus) {
+                    totalPrice = totalPrice + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+                }
+            }
+            return totalPrice
+        },
+        totalPriceGs(){
+            let totalPrice = 0
+            for(var i = 0;i<this.shopCartList.length;i++) {
+                if (this.shopCartList[i].productStatus) {
+                    totalPrice = totalPrice + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+                }
+            }
+            return totalPrice
+        },
+        totalWeight(){
+            let totalWeight = 0
+            for(var i = 0;i<this.shopCartList.length;i++) {
+                if (this.shopCartList[i].productStatus) {
+                    totalWeight = totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+                }
+            }
+            return totalWeight
+        },
+        weightPrice(){
+            if(this.totalWeight<=1000){
+                return 1
+            }
+            if((this.totalWeight%1000)<500){
+               return parseInt(this.totalWeight/1000)+0.5
+            }else{
+               return parseInt(this.totalWeight/1000)+1
+            }
+        },
+        totalPriceYf(){
+            return this.weightPrice*35
+        },
+        totalPrice(){
+            let priceTotal = 0
+            let shopCount = 0
+            for(var i=0;i<this.shopCartList.length;i++){
+                if(this.shopCartList[i].productStatus){
+                    priceTotal =priceTotal + (this.shopCartList[i].productPrice+this.shopCartList[i].bcCprice)*this.shopCartList[i].productQuantity
+                    shopCount++
+                }
+            }
+            if(shopCount==0){
+                return 0
+            }
+            return priceTotal+this.totalPriceYf
+        }
+    }
+    onLoad(){
+        this.windowHeight = wepy.getStorageSync('systemInfo').windowHeight
+        this.$apply()
+    }
+    async getCartList(){
+        //let that = this
+        let id = wepy.getStorageSync('USER_INFO');
+        tip.loading();
+        await wepy.request({
+            url:HOST_URL+'/cart/list',
+            method:'GET',
+            data:{'openid':id.openId},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                console.log(res)
+                if(res.data.code==0){
+                    this.shopCartList = res.data.data
+//                    for(var i = 0;i<this.shopCartList.length;i++){
+//                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+//                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+//                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+//                    }
+//                    this.totalPriceYf = (this.totalWeight/1000)*35
+                    this.$apply();
+                }else{
+                    tip.error(res.data.msg)
+                }
+            }
+        })
+        tip.loaded();
+    }
+    async addShop(id){
+        let user_info = wepy.getStorageSync('USER_INFO')
+        tip.loading()
+        wepy.request({
+            url:HOST_URL+'/cart/increase',
+            method:'GET',
+            data:{'cartCellId':id,'openid':user_info.openId},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code==0){
+                    for(var i=0;i<this.shopCartList.length;i++){
+                        if(this.shopCartList[i].id == id){
+                            this.shopCartList[i].productQuantity++
+//                            for(var i = 0;i<this.shopCartList.length;i++){
+//                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+//                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+//                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+//                            }
+//                            this.totalPriceYf = (this.totalWeight/1000)*35
+                            this.$apply()
+                        }
+                    }
+                }else{
+                    tip.error(res.data.msg)
+                }
+            }
+        })
+        tip.loaded()
+    }
+    async reduceShop(id){
+        let user_info = wepy.getStorageSync('USER_INFO')
+        tip.loading()
+        wepy.request({
+            url:HOST_URL+'/cart/reduce',
+            method:'GET',
+            data:{'cartCellId':id,'openid':user_info.openId},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code==0){
+                    for(var i=0;i<this.shopCartList.length;i++){
+                        if(this.shopCartList[i].id == id){
+                            this.shopCartList[i].productQuantity--
+//                            for(var i = 0;i<this.shopCartList.length;i++){
+//                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+//                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+//                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+//                            }
+//                            this.totalPriceYf = (this.totalWeight/1000)*35
+                            this.$apply()
+                        }
+                    }
+                }else{
+                    tip.error(res.data.msg)
+                }
+            }
+        })
+        tip.loaded()
+    }
+    async deleteShop(id){
+        let user_info = wepy.getStorageSync('USER_INFO')
+        tip.loading()
+        wepy.request({
+            url:HOST_URL+'/cart/delete',
+            method:'GET',
+            data:{'cartCellId':id,'openid':user_info.openId},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code==0){
+                    this.shopCartList = res.data.data
+//                    for(var i = 0;i<this.shopCartList.length;i++){
+//                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+//                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+//                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+//                    }
+//                    this.totalPriceYf = (this.totalWeight/1000)*35
+                    this.$apply()
+                }else{
+                    tip.error(res.data.msg)
+                }
+            }
+        })
+        tip.loaded()
+    }
+    methods = {
+        handleDelItem(e){
+            //执行删除操作
+            console.log(e);
+//            console.log(this.List[0]);
+//            var list_del = this.list;
+//            for(var i = 0;i<list_del.length;i++){
+//               if(list_del[i].id == e.id){
+//                    console.log('删除的下标是'+i+'  zhi==');
+//                    console.log(list_del[i]);
+//                    delete list_del[i];
+//                }
+//            }
+//            this.list = list_del;
+            let id = e.id
+            this.deleteShop(id)
+        },
+        selectTap(e) {
+            var id = e.currentTarget.dataset.id;
+            var index = parseInt(e.currentTarget.dataset.index);
+            this.shopCartList[index].productStatus = !this.shopCartList[index].productStatus
+            this.$apply()
+        },
+        jiaBtnTap(e){
+            var id = e.currentTarget.dataset.id;
+            //根据id找到要增加的商品 然后进行增加数量
+//            for (var i = 0;i<this.List.length;i++){
+//                if(id == this.List[i].id){
+//                    this.List[i].num ++
+//                }
+//            }
+            if(e.currentTarget.dataset.index<999){
+                this.addShop(id)
+            }else{
+                return
+            }
+        },
+        jianBtnTap(e){
+            console.log(e)
+            var id = e.currentTarget.dataset.id;
+            //根据id找到要增加的商品 然后进行增加数量
+//            for (var i = 0;i<this.List.length;i++){
+//                if(id == this.List[i].id){
+//                    this.List[i].num>1? this.List[i].num-- : this.List[i].num
+//                }
+//            }
+            if(e.currentTarget.dataset.index>1){
+                this.reduceShop(id)
+            }else{
+                return
+            }
+        },
+        selectAll(){
+            var flag = !this.allChecked
+            for (var i = 0;i<this.shopCartList.length;i++){
+                flag?this.shopCartList[i].productStatus = true:this.shopCartList[i].productStatus = false
+            }
+            this.allChecked = !this.allChecked
+            this.$apply()
+        },
+        toPayOrder(){
+            let that = this
+            let purType = 1,
+                prePurType = 1;
+            let index = 0;
+            let shopList = []
+            for (var i = 0; i < that.shopCartList.length; i++) {
+                if (that.shopCartList[i].productStatus) {
+                    shopList.push({'productId':that.shopCartList[i].productId,'productQuantity':that.shopCartList[i].productQuantity});
+                }
+            }
+            if(shopList.length==0){
+                tip.alert('未选中商品')
+                return ''
+            }
+            wepy.setStorageSync('shopList',shopList)
+            wepy.setStorageSync('totalprice',this.totalPrice)
+            wepy.navigateTo({
+                url: "/pages/comfire_order"
+            })
+        },
+        getCartListMethod(){
+            this.getCartList();
+        }
+    }
+}
+</script>
+<style lang="less">
+.shop_top{
+    float: left;
+    position: relative;
+    width: 100%;
+    height: 70rpx;
+    border-bottom-color: #e6e6e6;
+    border-bottom-style: solid;
+    border-bottom-width: 3rpx;
+    .top_img{
+        margin-left: 50rpx;
+        margin-top: 17rpx;
+        margin-bottom: 15rpx;
+        width: 36rpx;
+        height: 36rpx;
+    }
+    .top_img2{
+        margin-left: 210rpx;
+        width: 34rpx;
+        height: 34rpx;
+    }
+    .top_name{
+        position: absolute;
+        margin-top: 16rpx;
+        margin-left: 20rpx;
+        font-size: 30rpx;
+        font-weight: 590;
+    }
+}
+    .shop_1{
+        height: 160rpx;
+        border-bottom-color: #e6e6e6;
+        border-bottom-style: solid;
+        border-bottom-width: 3rpx;
+        .shop_2{
+            float: left;
+            width: 100%;
+            .icon_style{
+                position: absolute;
+                margin-top: 67rpx;
+            }
+            .shop_img{
+                margin-left: 70rpx;
+                margin-top: 7rpx;
+                width: 140rpx;
+                height: 140rpx;
+                border: 4rpx solid #000;
+            }
+            .shop2_icon{
+                width: 50rpx;
+                height: 100%;
+            }
+            .shop_name{
+                position: absolute;
+                margin: -160rpx 0 0 270rpx;
+                width: 450rpx;
+                font-size: 32rpx;
+                font-weight: 600;
+                overflow:hidden; //超出一行文字自动隐藏
+                text-overflow:ellipsis;//文字隐藏后添加省略号
+                white-space:nowrap;
+            }
+            .shop_price{
+                position: absolute;
+                margin: -110rpx 0 0 270rpx;
+                font-size: 30rpx;
+            }
+            .shop_weight{
+                position: absolute;
+                margin: -65rpx 0 0 270rpx;
+                font-size: 30rpx;
+            }
+            .buy-num{
+                overflow:hidden;
+                font-size: 37rpx;
+                width: 150rpx;
+                margin: -70rpx 0 0 550rpx;
+                text-align: center;
+                .jian-btn{
+                    float: left;
+                    width: 35rpx;
+                    height: 54rpx;
+                    border-left: 1rpx solid #ccc;
+                    border-bottom: 1rpx solid #ccc;
+                    border-top: 1rpx solid #ccc;
+                    border-bottom-left-radius: 6rpx;
+                    border-top-left-radius: 6rpx;
+                }
+                .shop_num{
+                    float: left;
+                    font-size: 35rpx;
+                    height: 54rpx;
+                    border-style: solid;
+                    border-color:#ccc;
+                    border-width: 1rpx;
+                }
+                .jia-btn{
+                    width: 35rpx;
+                    height: 54rpx;
+                    float: left;
+                    border-right: 1rpx solid #ccc;
+                    border-bottom: 1rpx solid #ccc;
+                    border-top: 1rpx solid #ccc;
+                    border-bottom-right-radius: 6rpx;
+                    border-top-right-radius: 6rpx;
+                }
+                .disabled{
+                    background-color: #f5f5f9;
+                    border-left: 1rpx solid #eee;
+                    border-bottom: 1rpx solid #eee;
+                    border-top: 1rpx solid #eee;
+                    color: #ccc;
+                }
+            }
+        }
+    }
+
+
+.shopstyle{
+    position: absolute;
+    margin-top: 70rpx;
+    width: 100%;
+}
+.totalInfo{
+    width: 100%;
+    height: 120rpx;
+    bottom: 0;
+    margin-bottom: 100rpx;
+    background-color: #f4f4f4;
+    border-top: 1px solid #c1c1c1;
+    position: absolute;
+    z-index: 999;
+    .Info{
+        float: left;
+        width: 220rpx;
+        height: 60rpx;
+        font-size: 32rpx;
+        margin-left: 60rpx;
+    }
+    .Info1{
+        float: left;
+        width: 380rpx;
+        height: 60rpx;
+        font-size: 32rpx;
+        margin-left: 70rpx;
+    }
+}
+.jiesuan-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100rpx;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #f4f4f4;
+    border-top: 1px solid #c1c1c1;
+    z-index: 9999;
+}
+.jiesuan-box .to-pay-btn {
+    width: 240rpx;
+    text-align: center;
+    line-height: 100rpx;
+    background-color: #e64340;
+    font-size: 32rpx;
+    color: #ffffff;
+}
+.jiesuan-box .to-pay-btn.no-select {
+    background-color: #ccc;
+}
+.jiesuan-box .left-price {
+    display: flex;
+    width: 510rpx;
+    justify-content: space-between;
+    padding: 0 30rpx 0 20rpx;
+    font-size: 28rpx;
+    box-sizing: border-box;
+    align-items: center;
+}
+.jiesuan-box .total {
+    color: #e64340;
+}
+.list_box {
+    height: 250rpx;
+}
+.all_select_box {
+    width: 200rpx;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.all_select {
+    flex: 1;
+    padding-left: 10rpx;
+}
+.empty_cart {
+    margin-top: 100rpx;
+    .shop_btn {
+        display: flex;
+        width: 100%;
+    }
+    .block {
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        align-items: center;
+    }
+    .btn_group {
+        display: flex;
+        align-items: center;
+        padding-top: 100rpx;
+        .btn {
+            font-size: 30rpx;
+            padding: 22rpx 55rpx;
+            text-align: center;
+            margin: 0 auto;
+            width: 100%;
+            -moz-border-radius: 10rpx;
+            /* Firefox */
+            -webkit-border-radius: 10rpx;
+            /* Safari 和 Chrome */
+            border-radius: 10rpx;
+            /* Opera 10.5+, 以及使用了IE-CSS3的IE浏览器 */
+        }
+        .get_store {
+            background: #ed601b;
+            color: #fff;
+            margin-left: 1rpx;
+        }
+    }
+}
+.empty_cart_img {
+    width: 220rpx;
+    height: 177rpx;
+    display: block;
+    margin: 0 auto;
+}
+.empty_cart_text {
+    font-size: 32rpx;
+    color: #999;
+    margin-top: 20rpx;
+    text-align: center;
+}
+</style>

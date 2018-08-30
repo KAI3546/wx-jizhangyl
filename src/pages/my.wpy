@@ -1,132 +1,180 @@
 <template>
     <view class="top_info">
         <view class="my_info">
-            <view class="info_img"><image class="image_style" src="../images/img8.jpg"></image></view>
-            <view class="info_name">KAI</view>
+            <view class="info_img"><image class="image_style" src="{{headimg}}"></image></view>
+            <view class="info_name">{{nickname}}</view>
         </view>
-        <view class="top_vip">
-            <view class="vip_level"><view class="vip_content">会员等级: 10级</view></view>
-            <view class="vip_qy">查看权益</view>
-        </view>
+        <!--<view class="top_vip">-->
+            <!--<view class="vip_level"><view class="vip_content"><image class="ancrown" src="../images/ancrown.png"/>会员等级: 10级</view></view>-->
+            <!--<view class="vip_qy">查看权益</view>-->
+        <!--</view>-->
         <view class="top_addr">
-            <view class="addr_info">个人邀请码: 666666</view>
-            <view class="personal_code">地址管理</view>
+            <!--<view class="addr_info">个人邀请码: 666666</view>-->
+            <view class="personal_code" @tap="goAddress()">地址管理</view>
         </view>
     </view>
     <view class="app_info">
-        <view class="app_introduce">APP介绍</view>
-        <view class="price_info">
-            <view class="price_detail"><view>本月销售额</view><view>￥ 60,000</view></view>
-            <view class="price_detail"><view>本月下游返点</view><view>￥ 2,000</view></view>
-            <view class="price_detail"><view>本月缴税额</view><view>￥ 1,000</view></view>
-            <view class="price_detail"><view>本月运费</view><view>￥ 2,000</view></view>
-        </view>
         <view class="status_info">
-            <view class="status_info_detail">
-                <view class="status_info_position">
-                    <view><image src="../images/dfk.png" style="height: 38rpx;width: 38rpx"></image></view>
-                    <view>代付款</view>
-                    <view></view>
-                </view>
-            </view>
-            <view class="status_info_detail">
-                <view class="status_info_position">
-                    <view><image src="../images/yfk.png" style="height: 38rpx;width: 38rpx"></image></view>
-                    <view>已付款</view>
-                    <view>未传身份证</view>
-                </view>
-            </view>
-            <view class="status_info_detail">
-                <view class="status_info_position">
-                    <view><image src="../images/wfh.png" style="height: 40rpx;width: 40rpx"></image></view>
-                    <view>待发货</view>
-                    <view>已传身份证</view>
-                </view>
-            </view>
-            <view class="status_info_detail">
-                <view class="status_info_position">
-                    <view><image src="../images/yfh.png" style="height: 40rpx;width: 40rpx"></image></view>
-                    <view>已发货</view>
-                    <view></view>
-                </view>
-            </view>
-            <view class="status_info_detail">
-                <view class="status_info_position">
-                    <view><image src="../images/ysh.png" style="height: 38rpx;width: 38rpx"></image></view>
-                    <view>已收货</view>
-                    <view></view>
-                </view>
-            </view>
+        <view class="status_info_detail" @tap="goOrder(0)">
+          <view class="status_info_position" >
+            <view><image src="../images/dfk.png" style="height: 38rpx;width: 38rpx"></image></view>
+            <view>待付款</view>
+            <view></view>
+          </view>
+        </view>
+        <view class="status_info_detail" @tap="goOrder(1)">
+          <view class="status_info_position">
+            <view><image src="../images/yfk.png" style="height: 38rpx;width: 38rpx"></image></view>
+            <view>已付款</view>
+            <view>未传身份证</view>
+          </view>
+        </view>
+        <view class="status_info_detail" @tap="goOrder(2)">
+          <view class="status_info_position">
+            <view><image src="../images/wfh.png" style="height: 40rpx;width: 40rpx"></image></view>
+            <view>待发货</view>
+            <view>已传身份证</view>
+          </view>
+        </view>
+        <view class="status_info_detail" @tap="goOrder(3)">
+          <view class="status_info_position">
+            <view><image src="../images/yfh.png" style="height: 40rpx;width: 40rpx"></image></view>
+            <view>已发货</view>
+            <view></view>
+          </view>
+        </view>
+        <view class="status_info_detail" @tap="goOrder(4)">
+          <view class="status_info_position">
+            <view><image src="../images/ysh.png" style="height: 38rpx;width: 38rpx"></image></view>
+            <view>已收货</view>
+            <view></view>
+          </view>
+        </view>
+      </view>
+        <view class="app_introduce"><image class="" src="../images/newshop.jpg" @tap="goAppInstroduce()"/></view>
+        <view class="price_info">
+            <view class="price_detail clearfix" @tap="goAmount(0)"><view>本月销售额</view><view>￥ 60,000</view></view>
+            <view class="price_detail clearfix"><view>本月下游返点</view><view>￥ 2,000</view></view>
+            <view class="price_detail clearfix" @tap="goAmount(2)"><view>本月缴税额</view><view>￥ 1,000</view></view>
+            <view class="price_detail clearfix" @tap="goAmount(3)"><view>本月运费</view><view>￥ 2,000</view></view>
         </view>
     </view>
-    <scroll-view class="bottom_info">
-        <view class="bottom_title">
-            <view class="bottom_title1">我的下游团队</view>
-            <view class="bottom_image"><image src="../images/right.png" class="right_img"></image></view>
-            <view class="bottom_title2">查看明细</view>
-        </view>
-        <view class="bottom_top_title">
-            <view class="title1"></view>
-            <view class="title2">成员</view>
-            <view class="title3">等级</view>
-            <view class="title4">本月销售额</view>
-            <view class="title5">本月返点</view>
-        </view>
+    <!--<scroll-view class="bottom_info">-->
+        <!--<view class="bottom_title">-->
+            <!--<view class="bottom_title1">我的下游团队</view>-->
+            <!--<view class="bottom_image"><image src="../images/right.png" class="right_img"></image></view>-->
+            <!--<view class="bottom_title2">查看明细</view>-->
+        <!--</view>-->
+        <!--<view class="bottom_top_title">-->
+            <!--<view class="title1"></view>-->
+            <!--<view class="title2">成员</view>-->
+            <!--<view class="title3">等级</view>-->
+            <!--<view class="title4">本月销售额</view>-->
+            <!--<view class="title5">本月返点</view>-->
+        <!--</view>-->
 
 
-        <view class="bottom_vip_info background">
-            <view class="title1"><image class="touxiang" src="../images/img12.jpg"></image></view>
-            <view class="title2">人生长短</view>
-            <view class="title3">7级</view>
-            <view class="title4">7,000</view>
-            <view class="title5">70</view>
-        </view>
-        <view class="bottom_vip_info">
-            <view class="title1"><image class="touxiang" src="../images/img11.jpg"></image></view>
-            <view class="title2">人生长短</view>
-            <view class="title3">7级</view>
-            <view class="title4">7,000</view>
-            <view class="title5">70</view>
-        </view>
-        <view class="bottom_vip_info background">
-            <view class="title1"><image class="touxiang" src="../images/img10.jpg"></image></view>
-            <view class="title2">人生长短</view>
-            <view class="title3">7级</view>
-            <view class="title4">7,000</view>
-            <view class="title5">70</view>
-        </view>
-        <view class="bottom_vip_info">
-            <view class="title1"><image class="touxiang" src="../images/img12.jpg"></image></view>
-            <view class="title2">人生长短</view>
-            <view class="title3">7级</view>
-            <view class="title4">7,000</view>
-            <view class="title5">70</view>
-        </view>
-        <view class="bottom_vip_info background">
-            <view class="title1"><image class="touxiang" src="../images/img11.jpg"></image></view>
-            <view class="title2">人生长短</view>
-            <view class="title3">7级</view>
-            <view class="title4">7,000</view>
-            <view class="title5">70</view>
-        </view>
+        <!--<view class="bottom_vip_info background">-->
+            <!--<view class="title1"><image class="touxiang" src="../images/ancrown.png"></image></view>-->
+            <!--<view class="title2">人生长短</view>-->
+            <!--<view class="title3">7级</view>-->
+            <!--<view class="title4">7,000</view>-->
+            <!--<view class="title5">70</view>-->
+        <!--</view>-->
+        <!--<view class="bottom_vip_info">-->
+            <!--<view class="title1"><image class="touxiang" src="../images/ancrown.png"></image></view>-->
+            <!--<view class="title2">人生长短</view>-->
+            <!--<view class="title3">7级</view>-->
+            <!--<view class="title4">7,000</view>-->
+            <!--<view class="title5">70</view>-->
+        <!--</view>-->
+        <!--<view class="bottom_vip_info background">-->
+            <!--<view class="title1"><image class="touxiang" src="../images/ancrown.png"></image></view>-->
+            <!--<view class="title2">人生长短</view>-->
+            <!--<view class="title3">7级</view>-->
+            <!--<view class="title4">7,000</view>-->
+            <!--<view class="title5">70</view>-->
+        <!--</view>-->
+        <!--<view class="bottom_vip_info">-->
+            <!--<view class="title1"><image class="touxiang" src="../images/ancrown.png"></image></view>-->
+            <!--<view class="title2">人生长短</view>-->
+            <!--<view class="title3">7级</view>-->
+            <!--<view class="title4">7,000</view>-->
+            <!--<view class="title5">70</view>-->
+        <!--</view>-->
+        <!--<view class="bottom_vip_info background">-->
+            <!--<view class="title1"><image class="touxiang" src=../images/ancrown.png"></image></view>-->
+            <!--<view class="title2">人生长短</view>-->
+            <!--<view class="title3">7级</view>-->
+            <!--<view class="title4">7,000</view>-->
+            <!--<view class="title5">70</view>-->
+        <!--</view>-->
 
 
 
-    </scroll-view>
+    <!--</scroll-view>-->
 </template>
 <script>
 import wepy from 'wepy'
 
 export default class My extends wepy.page{
-
+    data={
+        headimg:'',
+        nickname:''
+    }
+    onLoad(){
+        let userInfo = wepy.getStorageSync('USER_INFO')
+        this.headimg = userInfo.avatarUrl
+        this.nickname = userInfo.nickName
+        this.$apply()
+    }
+    methods={
+        goOrder(id){
+            wepy.navigateTo({
+                url: 'order_topay?selectid='+id
+            })
+        },
+        goAmount(id){
+            wepy.navigateTo({
+                url: 'amount_record?selectid='+id
+            })
+        },
+        goAppInstroduce () {
+            wepy.navigateTo({
+                url: 'app_instroduce'
+            })
+        },
+        goAddress() {
+            wepy.navigateTo({
+                url: 'address_list_recv?from=my'
+            })
+        }
+    }
 }
 </script>
 <style lang="less">
+  .clearfix:before,
+  .clearfix:after{
+    content: " ";
+    display: table;
+    clear: both;
+  }
+  page{
+    background:#f7f7f7;
+  }
+  .ancrown{
+    width:35rpx;
+    height:35rpx;
+    margin-bottom:-6rpx;
+  }
     .top_info{
         background-color: #ff0000;
-        height: 200rpx;
+        min-height: 280rpx;
         width: 100%;
         color: white;
+    }
+    .app_info{
+      text-align: center;
     }
     .my_info{
         float: left;
@@ -165,7 +213,6 @@ export default class My extends wepy.page{
     }
     .vip_level{
         float: left;
-        background-color: black;
         height:60rpx;
         width:270rpx;
         margin-top: 15rpx;
@@ -196,51 +243,62 @@ export default class My extends wepy.page{
         font-family: "Fira Code";
     }
     .personal_code{
-        float: left;
+        float: right;
         margin-top: 13rpx;
         text-align: center;
         width: 180rpx;
         font-size: 30rpx;
-        text-decoration: underline;
+        text-decoration: none;
     }
     .app_introduce{
         margin-top: 15rpx;
-        background-color: #eeeeee;
-        height: 120rpx;
-        margin-left: 8rpx;
-        margin-right: 8rpx;
-        line-height: 120rpx;
+        background-color: #fff;
+        width: 96%;
+        display: inline-block;
         text-align: center;
         font-size: 40rpx;
         font-weight: 600;
-        border-radius: 10rpx;
+        border-radius: 18rpx;
+      image{
+        width: 100%;
+        height: 190rpx;
+        display: inline-block;
+        border-radius: 18rpx;
+      }
     }
     .price_info{
         margin-top: 15rpx;
-        height: 260rpx;
-        width: 100%;
+        width: 96%;
+        display: inline-block;
+        background: #fff;
+        border-radius:18rpx;
     }
     .price_detail{
-        float: left;
-        width: 358rpx;
-        height: 120rpx;
-        background-color: #eeeeee;
-        margin: 0 8rpx 10rpx 8rpx;
         line-height: 60rpx;
         text-align: center;
         font-size: 33rpx;
-        border-radius: 10rpx;
+        padding-left:20rpx;
+        padding-right:20rpx;
+        border-bottom:1rpx #efefef dashed;
+        padding-top:15rpx;
+        padding-bottom:26rpx;
+        width:44%;
+        float:left;
+    }
+    .price_detail:nth-last-child(1){
+      border-bottom: none;
     }
     .status_info{
-        margin-top: 15rpx;
-        height: 133rpx;
-        width: 100%;
+      margin-top:-50rpx;
+      height:133rpx;
+      width:96%;
+      background:#fff;
+      border-radius:29rpx;
+      display: inline-block;
     }
     .status_info_detail{
         float: left;
-        background-color: #eeeeee;
-        margin-left: 8rpx;
-        margin-right: 10rpx ;
+        margin-left: 11rpx;
         height: 133rpx;
         width: 133rpx;
     }
@@ -253,16 +311,18 @@ export default class My extends wepy.page{
         font-size: 25rpx;
     }
     .bottom_info{
-        width: 100%;
+        width: 96%;
         height: 520rpx;
-        margin-top: 10rpx;
+        margin: 0 auto;
+        border-radius: 18rpx;
+        background:#fff;
     }
     .bottom_title{
-        background-color: #eeeeee;
         height: 70rpx;
         width: 100%;
         font-size: 30rpx;
         font-weight: 600;
+        border-bottom:1rpx #efefef solid;
     }
     .bottom_title1{
         float: left;

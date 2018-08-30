@@ -1,0 +1,366 @@
+<template>
+    <view class="sendinfo" @tap="setSendAddress">
+        <view class="sendtitle">发件人信息:</view>
+        <view class="toedit"><image class="poingimg" src="../images/point.png"></image></view>
+        <view class="sendmsg">{{sendaddress.sender}}  {{sendaddress.phone}}</view>
+    </view>
+    <view class="receiveinfo" @tap="setAddress">
+        <view class="receivetitle">收件人信息:</view>
+        <view class="receivename">
+            <view class="redtitle">微信昵称:</view>{{recaddress.receiverNickname}}
+        </view>
+        <view class="toedit"><image class="poingimg" src="../images/point.png"></image></view>
+        <view class="receivephone"><view class="realname">{{recaddress.receiver}}</view>{{recaddress.phone}}</view>
+        <view class="receiveaddr">{{recaddress.province}}{{recaddress.city}}{{recaddress.area}}{{recaddress.detailAddr}}</view>
+    </view>
+    <view class="tip">
+        <view class="contenttext">注意:</view>
+        <view class="contenttext">1.支付完成后，系统将自动生成一个物流单号</view>
+        <view class="contenttext">2.请务必提示收件人进入飞翩物流小程序上传个人清关信息</view>
+        <view class="contenttext">3.清关信息上传完毕后，包裹才会进入打包流程，因此请尽快上传收件人清关信息</view>
+
+    </view>
+    <view class="jiesuan-box">
+        <view class="left-price">
+            <view class="total">合计：<view class="money">¥ {{totalprice}}</view></view>
+        </view>
+        <view class="to-pay-btn"  bindtap="toPayOrder">去支付</view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy';
+    import tip from '@/utils/tip';
+
+    import {
+        HOST_URL,
+        ADDRESS_ID
+    } from '@/utils/constant';
+    export default class comfire_order extends wepy.page {
+        data = {
+            recaddress:{},
+            sendaddress:{},
+            ordershoplist:{},
+            totalprice:0,
+            nonceStr:'',
+            package:'',
+            paySign:'',
+            signType:'',
+            timeStamp:''
+        }
+        //初始化获取最新的一条收货地址
+        async getRecAddress(){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'addr/findAllByOpenid',
+                method:'GET',
+                data:{'openid':user_info.openId,'page':1,'size':1},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        if(!res.data.data){
+                            tip.error('请添加信息')
+                        }
+                        this.recaddress = res.data.data.data[0]
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        //根据收件人地址id得到相应的数据
+        async getAddressInfo(id){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'addr/findById',
+                method:'GET',
+                data:{'id':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        //this.receiveinfo = [...this.receiveinfo, ...res.data.data.data];
+                        this.recaddress = res.data.data
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+
+        async getSendAddress(id){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'sender/findById',
+                method:'GET',
+                data:{'id':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        //this.receiveinfo = [...this.receiveinfo, ...res.data.data.data];
+                        this.sendaddress = res.data.data
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async getDefaultSend(){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'sender/getDefault',
+                method:'GET',
+                data:{'openid':user_info.openId},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        this.sendaddress = res.data.data
+                        this.$apply()
+                    }else{
+//                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async subOrder(){
+            let shopList = wepy.getStorageSync('shopList')
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading('订单提交中')
+            await wepy.request({
+                url:HOST_URL+'/order/create',
+                method:'POST',
+                data:{'openid':user_info.openId,'items':JSON.stringify(shopList),'senderAddrId':this.sendaddress.id,'receiverAddrId':this.recaddress.id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code == 0){
+                        this.toPay(res.data.data.orderId)
+                    }else{
+                        tip.alert('订单创建失败')
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async toPay(id){
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'/pay/unifiedOrder',
+                method:'POST',
+                data:{'orderId':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.data){
+                        this.doPay(res.data.data)
+                        this.nonceStr = res.data.data.nonceStr
+                        this.package = res.data.data.package
+                        this.paySign = res.data.data.paySign
+                        this.signType = res.data.data.signType
+                        this.timeStamp = res.data.data.timeStamp
+                        this.$apply()
+
+                    }
+                }
+            })
+        }
+        async doPay(data){
+            wepy.requestPayment({
+                appId:data.appid,
+                timeStamp: data.timeStamp,
+                nonceStr: data.nonceStr,
+                package: data.package,
+                signType: 'MD5',
+                paySign: data.paySign,
+                success:function(res){
+                    tip.toast('支付成功')
+                    wepy.redirectTo({
+                        url: 'order_topay?selectid=1'
+                    })
+                },
+                fail:function(res){
+                    tip.error('支付失败')
+                    wepy.redirectTo({
+                        url: 'order_topay?selectid=0'
+                    })
+                }
+            })
+        }
+
+        methods = {
+            setAddress() {
+                wepy.navigateTo({
+                    url: "/pages/address_list_recv"
+                })
+            },
+            setSendAddress(){
+                wepy.navigateTo({
+                    url: "/pages/address_list_send"
+                })
+            },
+            toPayOrder(){
+                this.subOrder()
+            }
+        }
+        onLoad(option){
+            this.totalprice = wepy.getStorageSync('totalprice')
+            let from = option.from==undefined?"":option.from;
+            let recid = wepy.getStorageSync(ADDRESS_ID)
+            this.ordershoplist = wepy.getStorageSync('shopList')
+            let senderid = wepy.getStorageSync('sender')
+            if (from=="selAdd") {
+                this.getAddressInfo(recid)
+                senderid>0?this.getSendAddress(senderid):this.getDefaultSend()
+            }else if(from=='sendAdd'){
+                this.getSendAddress(senderid)
+                recid>0?this.getAddressInfo(recid):this.getRecAddress()
+            }else{
+                this.getRecAddress()
+                this.getDefaultSend()
+            }
+            this.$apply()
+        }
+    }
+</script>
+
+<style lang="less">
+.sendinfo{
+    position: relative;
+    width: 97%;
+    height: 200rpx;
+    background-color: #f5f5f5;
+    margin: 35rpx auto;
+    color: #000000;
+    border-radius:18rpx;
+    font-size: 33rpx;
+    box-shadow: 0 0 2rpx rpx #ccc;
+}
+.sendtitle{
+    width: 200rpx;
+    height: 45rpx;
+    margin-top: 20rpx;
+    margin-left: 20rpx;
+    display:inline-block;
+}
+.toedit{
+    position: absolute;
+    width: 50rpx;
+    height: 50rpx;
+    margin-left: 90%;
+    .poingimg{
+        width: 40rpx;
+        height: 40rpx;
+    }
+}
+.sendmsg{
+    text-align: center;
+    height: 110rpx;
+    margin: 20rpx 20rpx 20rpx 20rpx;
+}
+.receiveinfo{
+    width: 97%;
+    height: 290rpx;
+    background-color: #101010;
+    margin: 10rpx auto;
+    position: relative;
+    color: white;
+    font-size: 33rpx;
+    border-radius:18rpx;
+    box-shadow: 0 0 2rpx rpx #ccc;
+}
+.receivetitle{
+    display:inline-block;
+    width: 200rpx;
+    margin: 25rpx 0 0 40rpx;
+}
+.receivename{
+    margin: 15rpx 0 10rpx 40rpx;
+    width: 400rpx;
+}
+.redtitle{
+    width: 160rpx;
+    color: #fe0000;
+    float: left;
+}
+.receivephone{
+    width: 70%;
+    margin: 10rpx 0 10rpx 40rpx;
+    .realname{
+        width: 100rpx;
+        float: left;
+    }
+}
+.receiveaddr{
+    width: 80%;
+    margin: 10rpx 0 10rpx 40rpx;
+
+}
+.tip{
+    width: 76%;
+    height: 400rpx;
+    margin: 100rpx auto;
+    font-size: 30rpx;
+    color: #ff0305;
+}
+.bottom{
+    /*width: 100%;*/
+    /*height: 100rpx;*/
+    /*bottom: 0;*/
+    /*background-color: green;*/
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100rpx;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: coral;
+    border-top: 1px solid #c1c1c1;
+    z-index: 9999;
+}
+.jiesuan-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 100rpx;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #fbfbfb;
+    border-top: 1px solid #e0e0e0;
+    z-index: 9999;
+}
+.jiesuan-box .to-pay-btn {
+    width: 240rpx;
+    text-align: center;
+    line-height: 100rpx;
+    background-color: #ff0010;
+    font-size: 32rpx;
+    color: #ffffff;
+}
+.jiesuan-box .left-price {
+    display: flex;
+    width: 510rpx;
+    justify-content: space-between;
+    padding: 0 30rpx 0 240rpx;
+    font-size: 35rpx;
+    box-sizing: border-box;
+    text-align: center;
+    line-height: 100rpx;
+}
+.jiesuan-box .total {
+    display: flex;
+    color: black;
+}
+.jiesuan-box .money{
+    color: #ff0300;
+}
+</style>

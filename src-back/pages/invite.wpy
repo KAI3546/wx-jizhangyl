@@ -1,0 +1,62 @@
+<template>
+    <view>请输入邀请码</view>
+    <input type="text" name="search_input" bindinput="searchInput" class="search_input" focus="true" value="{{search_input_value}}" confirm-type="search" placeholder="输入验证码" />
+    <button  @tap="search()">提交</button>
+</template>
+<script>
+    import wepy from 'wepy';
+    import tip from '@/utils/tip'
+    import {
+        SYSTEM_INFO,
+        USER_SPECICAL_INFO,
+        USER_INFO,
+        HOST_URL
+    } from '@/utils/constant';
+    export default class Search extends wepy.page {
+        data = {
+            search_input_value: '',
+            show : 1,
+            status:'',
+            msg:''
+        }
+
+        methods = {
+            searchInput(e) {
+                this.search_input_value = e.detail.value;
+                this.$apply();
+            },
+            search() {
+                let user_info = wepy.getStorageSync('USER_INFO')
+                wepy.request({
+                    //url: 'http://localhost/jzgyl/public/index.php/api/invite/sendCode',
+                    url:HOST_URL+'/user/checkInviteCode',
+                    method: 'GET',
+                    data:{'code':this.search_input_value,'open_id':user_info.openId},
+                    header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    complete:(res)=>{
+                        //下面两句报废代码
+//                        this.status = res.data.status
+//                        this.msg = res.data.msg
+                        this.$apply();
+                        if(res.data.code==0){
+                            //输入成功，业务逻辑
+                            wepy.setStorageSync('is_activate',1)
+                            tip.success('邀请码正确')
+                            wepy.switchTab({
+                                url: '/pages/index'
+                            })
+                        }
+                        if(res.data.code!=0){
+                            tip.error(res.data.msg)
+                        }
+                    }
+                })
+            }
+        }
+
+    }
+
+</script>
+<style lang="less">
+
+</style>

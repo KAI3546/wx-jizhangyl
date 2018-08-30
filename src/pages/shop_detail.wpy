@@ -1,37 +1,38 @@
 <template>
     <view class="shop_detail">
         <view class="shop_img">
-            <image src="../images/img11.jpg" class="image_style"></image>
+            <image src="{{shopInfo.shop_image}}" class="image_style"></image>
         </view>
-        <view class="shop_name">日本CPB精华肌底液</view>
-        <view class="shop_info"><view class="title1">市场零售价:</view><view class="title2">￥255</view></view>
-        <view class="shop_info"><view class="title1">供货价:</view><view class="title2">￥356</view></view>
-        <view class="shop_info"><view class="title1">关税:</view><view class="title2">￥11</view></view>
-        <view class="shop_info"><view class="title1">供货价+关税:</view><view class="title2">￥367</view></view>
-        <view class="shop_info"><view class="title1">打包重量:</view><view class="title2">300g</view></view>
-        <view class="shop_tip">（非商品实际重量，根据商品体积等综合计算得出）</view>
+        <view class="shop_name">{{shopInfo.shop_name}}</view>
+        <view class="shop_info clearfix"><view class="title1">市场零售价:</view><view class="title2">￥{{shopInfo.shop_lprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">商品JAN CODE:</view><view class="title2">{{shopInfo.shop_jan}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">供货价+关税:</view><view class="title2">￥{{priceAndcell}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">供货价:</view><view class="title2">￥{{shopInfo.shop_gprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">关税:</view><view class="title2">￥{{shopInfo.bc_cprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">打包重量:</view><view class="title2">{{shopInfo.shop_dweight}}g</view></view>
+        <view class="shop_tip clearfix">（非商品实际重量，根据商品体积等综合计算得出）</view>
     </view>
     <view class="shop_content">
         <view class="info_name">朋友圈文案:</view>
-        <view class="info_content">“CPB夜用霜~超级好用的面霜！在我心里面霜排行前三！成分中添加水解丝成分，触感特别柔软而细腻，几百块的面霜有这种水准非常令我吃惊！！！效果方面，用后皮肤很水润，细腻，皮肤会越发平滑，修复效果很棒”</view>
-        <view class="info_copy">点击复制</view>
+        <view class="info_content">“{{shopInfo.wenan}}”</view>
+        <view class="info_copy" @tap="copywenan">点击复制</view>
     </view>
     <view class="shop_list">
         <view class="{{show_status?'choice_jsname':'shop_jsname'}}" bindtap="choiceStatus" data-index='1'>图文素材</view>
         <view class="{{show_status?'shop_jsname':'choice_jsname'}}" bindtap="choiceStatus" data-index='0'>参数规格</view>
     </view>
     <view class="image_list" wx:if="{{show_status}}">
-        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
-        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
-        <view class="shop_list_image"><image class="imagelist" src="../images/img10.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
     </view>
     <view class="format_info" wx:if="{{!show_status}}">
         <view class="title_name1 no1">品牌</view>
-        <view class="title_name2 no1">CPB</view>
+        <view class="title_name2 no1">{{shopInfo.brand_name}}</view>
         <view class="title_name1">产地</view>
         <view class="title_name2">日本</view>
         <view class="title_name1">分类</view>
-        <view class="title_name2">面霜</view>
+        <view class="title_name2">{{shopInfo.cate_name}}</view>
         <view class="title_name1">净含量</view>
         <view class="title_name2">125ml</view>
         <view class="title_name1">保质期</view>
@@ -44,24 +45,75 @@
 </template>
 <script>
 import wepy from 'wepy'
+import tip from '@/utils/tip'
+import {
+    HOST_URL,
+    IMG_URL
+} from '@/utils/constant'
 export default class ShopDetail extends wepy.page{
     data={
-        show_status:1
+        shop_id:'',
+        shopInfo:[],
+        show_status:1,
     }
     methods={
         choiceStatus(e){
             let title = e.currentTarget.dataset.index;
             title=='0'?this.show_status=0:this.show_status=1;
+        },
+        copywenan(){
+            wepy.setClipboardData({
+                data:this.shopInfo.wenan,
+                success:(res)=>{
+                    tip.toast('复制成功')
+                },
+                fail:(res)=>{
+                    tip.alert('复制失败')
+                }
+            })
+        }
+    }
+    computed={
+        priceAndcell:function(){
+            let price = parseFloat(this.shopInfo.bc_cprice)+parseFloat(this.shopInfo.shop_gprice)
+            return price.toFixed(2)
         }
     }
     config = {
         navigationBarTitleText: '商品详情',
     }
+    async getShopInfo(id){
+        let that = this
+        await wepy.request({
+            url:HOST_URL+'shop/detail',
+            method:'GET',
+            data:{'id':id},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code == 0){
+                    that.shopInfo = res.data.data
+                    that.$apply()
+                }else{
+                    tip.error('请重新刷新')
+                }
+            }
+        })
+    }
+
+    onLoad(options){
+        this.shop_id= options.id
+        this.getShopInfo(this.shop_id)
+    }
 }
 </script>
 <style lang="less">
+  .clearfix:before,
+  .clearfix:after{
+    content: " ";
+    display: table;
+    clear: both;
+  }
     .shop_detail{
-        margin-top: 10rpx;
         width: 100%;
         overflow: hidden;
     }
@@ -73,21 +125,29 @@ export default class ShopDetail extends wepy.page{
     .image_style{
         height: 100%;
         width: 100%;
-        border: solid black 5rpx;
     }
     .shop_name{
         margin-top: 10rpx;
-        font-weight: 600;
-        text-align: center;
+        text-align: left;
+        font-size: 40rpx;
+        padding-left: 15rpx;
+        padding-right: 15rpx;
     }
     .shop_info{
-        font-size: 37rpx;
-
-
-        .title1{
-            width: 225rpx;
-            float: left;
-            margin-left: 210rpx;
+        font-size: 33rpx;
+        padding: 0 15rpx;
+        border-bottom: 1rpx #efefef dashed;
+        margin-top: 15rpx;
+        margin-bottom:15rpx;
+        padding-bottom:14rpx;
+      .title1{
+          width: 50%;
+          float: left;
+        }
+        .title2{
+          float: left;
+          width: 50%;
+          text-align:right;
         }
     }
     .shop_tip{

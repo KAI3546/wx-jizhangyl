@@ -1,0 +1,188 @@
+<template>
+    <view class="chosedate">
+        <view class="leftstart">
+            <view class="start">起:</view>
+            <view class="date">
+                <picker mode="date" value="{{date}}" start="2018-8-1" end="{{end}}" bindchange="bindDateChange">
+                    <view class="picker">
+                        {{year}}年 {{month}}月 {{day}}日
+                    </view>
+                </picker>
+            </view>
+        </view>
+        <view class="rightend">
+            <view class="start">止:</view>
+            <view class="date">
+                <picker mode="date" value="{{date}}" start="{{start}}" end="{{end}}" bindchange="bindDateChangeEnd">
+                    <view class="picker">
+                        {{endyear}}年 {{endmonth}}月 {{endday}}日
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <view class="showamount">
+        <view class="totalnum">￥{{amount}}</view>
+        <view class="searchbutton" @tap.stop="queryAmount">查询</view>
+    </view>
+    <view class="historyamount"></view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import tip from '@/utils/tip';
+    import {
+        SYSTEM_INFO,
+        USER_SPECICAL_INFO,
+        USER_INFO,
+        HOST_URL,
+        IMG_URL
+    } from '@/utils/constant';
+    export default class AmountRecord extends wepy.page{
+        data={
+            year:2018,
+            month:8,
+            day:11,
+            end:'',
+            endyear:'',
+            endmonth:'',
+            endday:'',
+            amount:0.00,
+            selectid:0
+        }
+        config = {
+            navigationBarTitleText: '本月销售额',
+        }
+        computed={
+            start(){
+                return this.year+'-'+this.month+'-'+this.day
+            }
+        }
+        onLoad(options){
+            options.selectid?this.selectid=options.selectid:''
+            this.getNowFormatDate()
+        }
+        async getAmountByTime(){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            let beginDate = this.year+'-'+this.month+'-'+this.day
+            let endDate = this.endyear+'-'+this.endmonth+'-'+this.endday
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'order/sellAmount',
+                method:'GET',
+                data:{'openid':user_info.openId,'beginDate':beginDate,'endDate':endDate},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code == 0){
+                        if(this.selectid==0){
+                            this.amount = res.data.data.totalTaxes
+                        }
+                        if(this.selectid == 2){
+                            this.amount = res.data.data.Cost
+                        }
+                        if(this.selectid == 3){
+                            this.amount = res.data.data.totalFreight
+                        }
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var year = date.getFullYear();
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = year + seperator1 + month + seperator1 + strDate;
+            this.end = currentdate
+            this.endyear = year
+            this.endmonth = month
+            this.endday = strDate
+        }
+        methods={
+            bindDateChange(e){
+                let date = e.detail.value.split('-')
+                this.year = date[0]
+                this.month = date[1]
+                this.day = date[2]
+            },
+            bindDateChangeEnd(e){
+                let date = e.detail.value.split('-')
+                this.endyear = date[0]
+                this.endmonth = date[1]
+                this.endday = date[2]
+            },
+            queryAmount(e){
+                this.getAmountByTime()
+            }
+        }
+    }
+</script>
+<style lang="less">
+    .chosedate{
+        display: flex;
+        overflow: hidden;
+        padding: 40rpx 20rpx;
+        font-size: 40rpx;
+        .leftstart{
+            width: 50%;
+            text-align: center;
+            .start{
+            }
+            .date{
+              font-size:35rpx;
+              padding:15rpx 10rpx;
+              margin:20rpx 20rpx;
+              border-radius:59rpx;
+              box-shadow:0 0 5rpx 1rpx #ccc;
+              font-weight:600;
+            }
+        }
+        .rightend{
+            width: 50%;
+            text-align: center;
+            .start{
+            }
+            .date{
+              font-size:35rpx;
+              padding:15rpx 10rpx;
+              margin:20rpx 20rpx;
+              border-radius:59rpx;
+              box-shadow:0 0 5rpx 1rpx #ccc;
+              font-weight:600;
+            }
+        }
+    }
+    .showamount{
+        display: flex;
+        width: 100%;
+        .totalnum{
+            width: 50%;
+            line-height: 80rpx;
+            font-size: 80rpx;
+            color: red;
+            text-align: center;
+        }
+        .searchbutton{
+            width: 50%;
+            line-height: 60rpx;
+            font-size: 40rpx;
+            margin: auto 20rpx;
+            background: #ff2828;
+            color: white;
+            text-align: center;
+            border-radius: 10rpx;
+            padding:10rpx 0;
+            font-weight:600;
+        }
+    }
+</style>

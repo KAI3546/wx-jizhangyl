@@ -1,0 +1,112 @@
+<style lang="less">
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+        'pages/authorize',
+        'pages/index',
+        'pages/classify',
+        'pages/cart',
+        'pages/my',
+        'pages/test',
+        'pages/shop_detail',
+        'pages/invite',
+        'pages/comfire_order',
+        'pages/address_list_recv',
+        'pages/address_list_send',
+        'pages/order_topay',
+        'pages/amount_record'
+
+//      'pages/home',
+//      'pages/shop_cart',
+//      'pages/info'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#000',
+      navigationBarTitleText: '集栈供应链',
+      navigationBarTextStyle: 'white'
+    },
+      "tabBar": {
+          "color": "#999999",
+          "selectedColor": "#fff",
+          "backgroundColor": "#000000",
+          "borderStyle": "black",
+          "list": [{
+              "pagePath": "pages/index",
+              "text": "首页",
+              "iconPath": "images/home.png",
+              "selectedIconPath": "images/home@.png"
+          }, {
+              "pagePath": "pages/classify",
+              "text": "分类",
+              "iconPath": "images/fenlei.png",
+              "selectedIconPath": "images/fenlei@.png"
+          }, {
+              "pagePath": "pages/cart",
+              "text": "购物车",
+              "iconPath": "images/cart.png",
+              "selectedIconPath": "images/cart@.png"
+          }, {
+              "pagePath": "pages/my",
+              "text": "我",
+              "iconPath": "images/my.png",
+              "selectedIconPath": "images/my@.png"
+          }]
+      }
+  }
+
+  globalData = {
+    userInfo: null
+  }
+
+  constructor () {
+    super()
+    this.use('requestfix')
+  }
+
+  onLaunch() {
+    this.testAsync()
+  }
+
+  sleep (s) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('promise resolved')
+      }, s * 1000)
+    })
+  }
+
+  async testAsync () {
+    const data = await this.sleep(3)
+    console.log(data)
+  }
+
+  getUserInfo(cb) {
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        cb && cb(res.userInfo)
+      }
+    })
+  }
+}
+</script>

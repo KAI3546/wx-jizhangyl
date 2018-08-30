@@ -8,8 +8,8 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"appid": "wx1cf367628972149f",
-	"projectname": "myapp",
+	"appid": "wxbdc2198e6134aa08",
+	"projectname": "%E9%9B%86%E6%A0%882",
 	"miniprogramRoot": "./dist",
 	"condition": {
 		"search": {
@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 3,
 			"list": [
 				{
 					"id": 0,
@@ -51,7 +51,55 @@
 				{
 					"id": 3,
 					"name": "测试模块",
-					"pathName": "pages/shop_detail",
+					"pathName": "pages/search_shop",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "主页界面",
+					"pathName": "pages/index",
+					"query": ""
+				},
+				{
+					"id": 5,
+					"name": "新增地址",
+					"pathName": "pages/address_list_recv",
+					"query": ""
+				},
+				{
+					"id": 6,
+					"name": "确认订单",
+					"pathName": "pages/comfire_order",
+					"query": ""
+				},
+				{
+					"id": 7,
+					"name": "订单列表",
+					"pathName": "pages/order_topay",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "本月销售额",
+					"pathName": "pages/amount_record",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "发件人界面",
+					"pathName": "pages/address_list_send",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "介绍界面",
+					"pathName": "pages/app_instroduce",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "验证码界面",
+					"pathName": "pages/invite",
 					"query": ""
 				}
 			]

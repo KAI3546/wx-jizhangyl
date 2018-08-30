@@ -1,0 +1,193 @@
+<template>
+    <view class="waper">
+  <view class="main">
+    <view class="business clearfix">
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">01 <view class="triangle-right"></view><text>日本品牌方</text></view>
+        </view>
+        <image class="business-img img-right" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">02 <view class="triangle-right"></view><text>集栈自采</text></view> 
+        </view>
+        <image class="business-img img-right" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">03 <view class="triangle-down"></view><text>日本东京仓库</text></view> 
+        </view>
+        <image class="business-img img-down" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text  ">
+          <view class="text-pig"><view class="triangle-down"></view>06<text>填写收件人地址信息</text></view> 
+        </view>
+        <image class="business-img img-down" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig"><view class="triangle-left"></view>05<text style="font-size: 20rpx;">买手在集栈下单对应商品</text></view> 
+        </view>
+        <image class="business-img img-left" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig"><view class="triangle-left"></view>04<text style="font-size: 20rpx;">买手卖出商品在微信淘宝任何电商平台</text></view> 
+        </view>
+        <image class="business-img img-left" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">07 <view class="triangle-right"></view><text>买手支付完成</text></view>
+        </view>
+        <image class="business-img img-right" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">08 <view class="triangle-right"></view><text style="font-size: 20rpx;">收件人去飞翩物流上传清关证件</text></view> 
+        </view>
+        <image class="business-img img-right" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">09 <view class="triangle-down"></view><text>日本东京仓库开始打包</text></view> 
+        </view>
+        <image class="business-img img-down" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig"><view class="triangle-down"></view>12<text>海关清关完毕</text></view> 
+        </view>
+        <image class="business-img img-down" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig"><view class="triangle-left"></view>11<text>飞往中国口岸城市清关</text></view>
+        </view>
+        <image class="business-img img-left" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig"><view class="triangle-left"></view>10<text>安排日本航班</text></view> 
+        </view>
+        <image class="business-img img-left" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">13 <view class="triangle-right"></view><text>中国国内EMS安排派送</text></view> 
+        </view>
+        <image class="business-img img-right" src="../images/arrow.png"/>
+      </view>
+      <view class="business-itm">
+        <view class="business-text">
+          <view class="text-pig">14<text>收件人签收包裹</text></view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+</template>
+<script>
+    import wepy from 'wepy'
+    export default class AppInstroduce extends wepy.page{
+        config = {
+            navigationBarTitleText: '业务介绍',
+        }
+    }
+</script>
+<style lang="less">
+    .clearfix:before,
+.clearfix:after{
+    content: " ";
+    display: table;
+    clear: both;
+}
+.business{
+  padding:1em 0.6em;
+}
+.business-itm{
+  width: 180rpx;
+  height: 180rpx;
+  float: left;
+  border-radius: 50%;
+  background: #000000;
+  text-align: center;
+  position: relative;
+  margin:26rpx;
+  position: relative;
+}
+.business-text{
+  width:150rpx;
+  height: 150rpx;
+  font-size: 35rpx;
+  font-weight: 600;
+  color: #ffffff;
+  border-radius: 50%;
+  border: 6rpx #404040 solid;
+  position: absolute;
+  top: 10rpx;
+  left: 10rpx;
+}
+text{
+  display: block;
+  font-size: 24rpx;
+}
+.text-pig{
+  padding-top: 22rpx;
+}
+.business-img{
+  width:51rpx;
+  height:22rpx;
+  position:absolute;
+}
+.img-right{
+  top:80rpx;
+  left:180rpx;
+  transform: rotateZ(180deg);
+}
+.img-left{
+  top:80rpx;
+  left:-50rpx;
+  transform: rotateZ(0deg);
+}
+.img-down{
+  top:195rpx;
+  left:65rpx;
+  transform: rotateZ(-90deg);
+}
+/*箭头icon*/
+.triangle-up{  
+    display:inline-block;  
+    width:0;  
+    height:0;  
+    border-left:7px solid transparent;  
+    border-right: 10px solid transparent;  
+    border-bottom:7px solid #ffffff;
+    }  
+.triangle-down {  
+    display:inline-block;  
+    width:0;  
+    height:0;  
+    border-left:7px solid transparent;  
+    border-right: 7px solid transparent;  
+    border-top:10px solid #ffffff;
+    }  
+.triangle-left {  
+    display:inline-block;  
+    width:0;  
+    height:0;  
+    border-top: 7px solid transparent;  
+    border-right: 10px solid #ffffff;  
+    border-bottom: 7px solid transparent;
+    }  
+.triangle-right{  
+    display:inline-block;  
+    width:0;  
+    height:0;  
+    border-top: 7px solid transparent;  
+    border-left: 10px solid #ffffff;  
+    border-bottom: 7px solid transparent;
+    }
+</style>
