@@ -58,15 +58,15 @@ export default class ShopItemList extends wepy.component{
     overflow:hidden
 }
 .shopimg {
-    float: left;
-    text-align: center;
-    margin-left: 2.5%;
-    margin-right: 2.5%;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    width: 45%;
-    background-color: #fff;
-    box-shadow: 0rpx 0rpx 5rpx #ccc;
+    float:left;
+	text-align:center;
+	margin-left:1.1%;
+	margin-right:1.1%;
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+	width:47.8%;
+	background-color:#fff;
+	box-shadow:0rpx 0rpx 5rpx #ccc;
     .image2 {
         height:300rpx;
         width: 300rpx;

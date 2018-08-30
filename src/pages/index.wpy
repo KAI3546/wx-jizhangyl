@@ -3,7 +3,7 @@
   <view class="top_search">
   <image class='logo_img' src="../images/logo.png"></image>
   <view class="search_input" @tap="goSearchShop()">
-    <input type="text" placeholder="输入商品名或JAN CODE" style="width:420rpx;float:left;margin-left:20rpx"/>
+    <input type="text" placeholder="输入商品名或 JanCode" disabled />
     <icon class="icon_style" type="search" size="15" color="#7b7b7b"></icon>
   </view>
   <i class="text_font">搜索</i>
@@ -129,26 +129,35 @@
   .logo_img {
     height: 60rpx;
     width: 60rpx;
-    margin: 20rpx 20rpx 20rpx 30rpx;
+    margin: 22rpx 20rpx 14rpx 30rpx;
   }
   .search_input {
-    position: absolute;
-    margin: -80rpx 0 0 120rpx;
-    width: 500rpx;
-    height: 50rpx;
-    background-color: #f1f1f1;
-    border-radius: 17rpx;
+    position:absolute;
+	margin:-80rpx 0 0 100rpx;
+	width:547rpx;
+	height:60rpx;
+	background-color:#f1f1f1;
+	border-radius:40rpx;
+	border:none;
+  }
+  .search_input input{
+  	width:210px;
+	float:left;
+	margin-left:22px;
+	font-size:31rpx;
+	line-height:34rpx;
+	margin-top:5rpx;
   }
   .icon_style {
-    float: right;
-    margin-top: 10rpx;
-    margin-right: 15rpx;
+    float:right;
+	margin-top:14rpx;
+	margin-right:22rpx;
   }
   .text_font {
-    font-size: 29rpx;
-    color : #e6e6e6;
-    position: absolute;
-    margin: 35rpx 20rpx auto 550rpx;
+    font-size:32rpx;
+	color:#e6e6e6;
+	position:absolute;
+	margin:30rpx 20rpx auto 550rpx;
   }
   .banner_style{
     margin-top: 100rpx;

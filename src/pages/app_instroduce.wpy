@@ -22,19 +22,19 @@
       </view>
       <view class="business-itm">
         <view class="business-text  ">
-          <view class="text-pig"><view class="triangle-down"></view>06<text>填写收件人地址信息</text></view> 
+          <view class="text-pig"><view class="triangle-down"></view> 06<text>填写收件人地址信息</text></view> 
         </view>
         <image class="business-img img-down" src="../images/arrow.png"/>
       </view>
       <view class="business-itm">
         <view class="business-text">
-          <view class="text-pig"><view class="triangle-left"></view>05<text style="font-size: 20rpx;">买手在集栈下单对应商品</text></view> 
+          <view class="text-pig"><view class="triangle-left"></view> 05<text style="font-size: 20rpx;">买手在集栈下单对应商品</text></view> 
         </view>
         <image class="business-img img-left" src="../images/arrow.png"/>
       </view>
       <view class="business-itm">
         <view class="business-text">
-          <view class="text-pig"><view class="triangle-left"></view>04<text style="font-size: 20rpx;">买手卖出商品在微信淘宝任何电商平台</text></view> 
+          <view class="text-pig"><view class="triangle-left"></view> 04<text style="font-size: 20rpx;">买手卖出商品在微信淘宝任何电商平台</text></view> 
         </view>
         <image class="business-img img-left" src="../images/arrow.png"/>
       </view>
@@ -58,19 +58,19 @@
       </view>
       <view class="business-itm">
         <view class="business-text">
-          <view class="text-pig"><view class="triangle-down"></view>12<text>海关清关完毕</text></view> 
+          <view class="text-pig"><view class="triangle-down"></view> 12<text>海关清关完毕</text></view> 
         </view>
         <image class="business-img img-down" src="../images/arrow.png"/>
       </view>
       <view class="business-itm">
         <view class="business-text">
-          <view class="text-pig"><view class="triangle-left"></view>11<text>飞往中国口岸城市清关</text></view>
+          <view class="text-pig"><view class="triangle-left"></view> 11<text>飞往中国口岸城市清关</text></view>
         </view>
         <image class="business-img img-left" src="../images/arrow.png"/>
       </view>
       <view class="business-itm">
         <view class="business-text">
-          <view class="text-pig"><view class="triangle-left"></view>10<text>安排日本航班</text></view> 
+          <view class="text-pig"><view class="triangle-left"></view> 10<text>安排日本航班</text></view> 
         </view>
         <image class="business-img img-left" src="../images/arrow.png"/>
       </view>

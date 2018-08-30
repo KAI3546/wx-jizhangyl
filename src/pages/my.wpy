@@ -24,7 +24,7 @@
         </view>
         <view class="status_info_detail" @tap="goOrder(1)">
           <view class="status_info_position">
-            <view><image src="../images/yfk.png" style="height: 38rpx;width: 38rpx"></image></view>
+            <view><image src="../images/yfk.png" style="height: 40rpx;width: 40rpx"></image></view>
             <view>已付款</view>
             <view>未传身份证</view>
           </view>
@@ -45,7 +45,7 @@
         </view>
         <view class="status_info_detail" @tap="goOrder(4)">
           <view class="status_info_position">
-            <view><image src="../images/ysh.png" style="height: 38rpx;width: 38rpx"></image></view>
+            <view><image src="../images/ysh.png" style="height: 40rpx;width: 40rpx"></image></view>
             <view>已收货</view>
             <view></view>
           </view>
@@ -247,7 +247,8 @@ export default class My extends wepy.page{
         margin-top: 13rpx;
         text-align: center;
         width: 180rpx;
-        font-size: 30rpx;
+        font-size: 34rpx;
+        font-weight:600;
         text-decoration: none;
     }
     .app_introduce{

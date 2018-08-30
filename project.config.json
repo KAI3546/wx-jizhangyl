@@ -1,15 +1,15 @@
 {
 	"description": "A WePY project",
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": false,
 		"postcss": false,
 		"minified": false,
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"appid": "wxbdc2198e6134aa08",
-	"projectname": "%E9%9B%86%E6%A0%882",
+	"appid": "wx467ca225872f65ca",
+	"projectname": "wx-%E9%9B%86%E6%A0%88",
 	"miniprogramRoot": "./dist",
 	"condition": {
 		"search": {
@@ -28,7 +28,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 3,
+			"current": 13,
 			"list": [
 				{
 					"id": 0,
@@ -101,6 +101,17 @@
 					"name": "验证码界面",
 					"pathName": "pages/invite",
 					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "业务流程",
+					"pathName": "pages/app_instroduce",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "搜索界面",
+					"pathName": "pages/search_shop"
 				}
 			]
 		}

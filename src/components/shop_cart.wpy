@@ -1,6 +1,6 @@
 <template>
     <view class="shop_top"><image class="top_img" src="../images/shop.png"></image><text class="top_name">日本东京直邮</text><image class="top_img top_img2" src="../images/point.png"></image></view>
-    <scroll-view class="shopstyle" scroll-y scroll-with-animation="true" style="height:{{windowHeight-150}}px">
+    <view class="shopstyle" style="height:{{windowHeight-150}}px">
         <repeat for="{{shopCartList}}" key="index" index="index" item="item">
             <view class="shop_1">
                 <swipeDelete :swipeData="item" @delItem.user="handleDelItem">
@@ -21,7 +21,7 @@
                 </swipeDelete>
             </view>
         </repeat>
-    </scroll-view>
+    </view>
     <view class="totalInfo">
         <view class="Info">货值: ￥{{totalPriceShop}}</view>
         <view class="Info1">关税: ￥{{totalPriceGs}}</view>
@@ -359,6 +359,7 @@ export default class ShopCart extends wepy.component{
         .shop_2{
             float: left;
             width: 100%;
+            padding-top:10rpx;
             .icon_style{
                 position: absolute;
                 margin-top: 67rpx;
@@ -368,7 +369,6 @@ export default class ShopCart extends wepy.component{
                 margin-top: 7rpx;
                 width: 140rpx;
                 height: 140rpx;
-                border: 4rpx solid #000;
             }
             .shop2_icon{
                 width: 50rpx;
