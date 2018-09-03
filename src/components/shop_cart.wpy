@@ -22,6 +22,13 @@
             </view>
         </repeat>
     </view>
+    <view class="shoptips">
+    	<view class="shopCart-tips">
+        <image src="../images/shoptips.png" />
+        <text>购物车里还没有商品</text>
+      </view>
+      <view class="shop-btn" @tap="gotoStop()">去逛逛</view>
+    </view>
     <view class="totalInfo">
         <view class="Info">货值: ￥{{totalPriceShop}}</view>
         <view class="Info1">关税: ￥{{totalPriceGs}}</view>
@@ -318,6 +325,11 @@ export default class ShopCart extends wepy.component{
         },
         getCartListMethod(){
             this.getCartList();
+        },
+        gotoStop(){
+          wepy.switchTab({
+            url: '/pages/index'
+          })
         }
     }
 }
@@ -444,6 +456,44 @@ export default class ShopCart extends wepy.component{
     position: absolute;
     margin-top: 70rpx;
     width: 100%;
+}
+.shoptips{
+  text-align:center;
+  padding-top:2em;
+  position:absolute;
+  margin-top:70rpx;
+  width:80%;
+  left:10%;
+  right:10%;
+  .shopCart-tips{
+      width: 100%;
+      text-align: center;
+      text{
+        display:inline-block;
+        width:100%;
+        text-align:center;
+        font-weight:600;
+        color:#e6e6e6;
+      }
+    }
+    image{
+      display: inline-block;
+      width:250rpx;
+      height:250rpx;
+    }
+    .shop-btn{
+      background-color:#ff4242;
+      border-radius:7rpx;
+      color:white;
+      padding:15rpx 32rpx;
+      text-align:center;
+      text-decoration:none;
+      display:inline-block;
+      font-size:35rpx;
+      width:158rpx;
+      line-height:35rpx;
+      margin-top:2em;
+    }
 }
 .totalInfo{
   width:100%;
