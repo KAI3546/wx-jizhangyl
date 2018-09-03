@@ -2,9 +2,136 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e772411a-b7bd-4059-ac65-f58110228c41" name="默认的" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/addcart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/alert.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/ancrown.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/arrow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/bottompoint.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/cart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/cart@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/dfk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/edit.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/error.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/fenlei.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/fenlei@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/home.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/home@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/img7.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/img8.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/img9.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/my.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/my@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/newshop.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/point.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/shop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/wfh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/yfh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/yfk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/images/ysh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/addcart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/alert.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/ancrown.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/arrow.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/bottompoint.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/cart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/cart@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/delete.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/dfk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/edit.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/error.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/fenlei.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/fenlei@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/home.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/home@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/img7.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/img8.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/img9.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/my.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/my@.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/new.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/newshop.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/point.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/right.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/shop.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/wfh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/yfh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/yfk.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/images/ysh.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/images/shoptips.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/hortlog-sn" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/api/api.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/app.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/counter.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/group.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/groupitem.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/panel.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/shop_cart.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/shop_item_list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/swiperDelete.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/wepy-area-picker.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/components/wepy-list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/mixins/test.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/address_list_recv.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/address_list_send.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/amount_record.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/app_instroduce.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/authorize.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/cart.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/classify.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/comfire_order.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/index.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/invite.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/my.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/order_topay.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/search_shop.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/pages/shop_detail.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/constant.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/md5.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/regions.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/tip.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/util.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本 (2)/utils/wxRequest.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/api/api.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/app.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/counter.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/group.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/groupitem.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/panel.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/shop_cart.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/shop_item_list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/swiperDelete.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/wepy-area-picker.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/components/wepy-list.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/mixins/test.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/address_list_recv.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/address_list_send.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/amount_record.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/app_instroduce.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/authorize.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/cart.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/classify.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/comfire_order.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/index.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/invite.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/my.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/order_topay.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/search_shop.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/pages/shop_detail.wpy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/constant.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/md5.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/regions.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/tip.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/util.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src - 副本/utils/wxRequest.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.wepycache" afterPath="$PROJECT_DIR$/.wepycache" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.config.json" afterPath="$PROJECT_DIR$/project.config.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/api/api.js" afterPath="$PROJECT_DIR$/src/api/api.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/app.wpy" afterPath="$PROJECT_DIR$/src/app.wpy" />
@@ -166,7 +293,7 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="-1374" />
     <option name="y" value="302" />
     <option name="width" value="1382" />
@@ -309,7 +436,7 @@
     <option name="totallyTimeSpent" value="492064000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1374" y="302" width="1382" height="744" extended-state="6" />
+    <frame x="-1374" y="302" width="1382" height="744" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1709531" sideWeight="0.48287672" order="0" side_tool="false" content_ui="combo" />
