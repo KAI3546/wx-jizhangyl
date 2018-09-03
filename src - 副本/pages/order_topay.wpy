@@ -1,0 +1,395 @@
+<template>
+    <view class="top">
+        <scroll-view class="classify" scroll-x="true" style="height: 73rpx;white-space: nowrap; display: flex" >
+        <view class="search"><icon class="iconsearch" type="search" size="20" color="#e3e3e3"></icon></view>
+            <view class="title {{selectid==6?'select':''}}" @tap="changeCate(6)">全部订单</view>
+            <view class="title {{selectid==0?'select':''}}" @tap="changeCate(0)">待付款</view>
+            <view class="title {{selectid==1?'select':''}}" @tap="changeCate(1)">已付款</view>
+            <view class="title {{selectid==2?'select':''}}" @tap="changeCate(2)">待发货</view>
+            <view class="title {{selectid==3?'select':''}}" @tap="changeCate(3)">已发货</view>
+            <view class="title {{selectid==4?'select':''}}" @tap="changeCate(4)">已收货</view>
+        </scroll-view>
+    </view>
+    <scroll-view class="orderlist" scroll-y style="height: {{windowHeight-37}}px" bindscrolltolower="getOrderBySelectId({{this.selectid}})">
+        <repeat for="{{ orderlist }}" key="index" index="index" item="item">
+        <view class="order">
+            <view class="orderinfo">
+                <view class="orderid">
+                    <view class="ordertitle">订单编号:</view>
+                    <view class="ordernumber">{{item.orderId}}</view>
+                </view>
+                <!--<view class="ordertime">
+                    <view class="ordertitle">微信昵称:</view>
+                    <view class="ordernumber">{{item.receiverNickname}}</view>
+                </view>-->
+                <view class="ordertime">
+                    <view class="ordertitle">收件人姓名:</view>
+                    <view class="ordernumber">{{item.recipient}}</view>
+                </view>
+                <view class="orderstatus">
+                    <view class="order_topay" wx:if="{{item.orderStatus == 0}}">待付款</view>
+                    <view class="order_donepay" style="color: brown" wx:if="{{item.orderStatus == 1}}">未传身份证</view>
+                    <view class="order_topay" wx:if="{{item.orderStatus == 2}}">待发货</view>
+                    <view class="order_donepay" wx:if="{{item.orderStatus == 3}}">已发货</view>
+                    <view class="order_donepay" wx:if="{{item.orderStatus == 4}}">已收货</view>
+                    <view class="order_donepay" style="color: darkgray" wx:if="{{item.orderStatus == 5}}">交易关闭</view>
+                </view>
+            </view>
+            <view class="shop" wx:for="{{item.orderDetailList}}" wx:for-item="val" wx:key="vo">
+                <view class="shopimage"><image class="shopimg" src="{{IMG_URL+val.productIcon}}"></image></view>
+                <view class="shopinfo">
+                    <view class="shoptitle">{{val.productName}}</view>
+                    <view class="shopprice">关税:{{val.detailTaxes}} 供货价:{{val.productPrice}}</view>
+                    <view class="totalprice">￥{{val.detailTaxes + val.productPrice}}</view>
+                    <view class="shopnum">x{{val.productQuantity}}</view>
+                </view>
+            </view>
+            <view class="orderbutton">
+                <view class="ordertotalprice">总金额: <view class="redfont">{{item.orderAmount}}</view></view>
+                <!--<view class="doback">申请退款</view>-->
+                <view class="delorder" wx:if="{{item.orderStatus == 0 || item.orderStatus == 1 || item.orderStatus == 2}}" @tap="cancleOrder({{item.orderId}},{{index}})">取消订单</view>
+                <view class="dopay" wx:if="{{item.orderStatus == 0}}" @tap="topay({{item.orderId}},{{index}})">立即付款</view>
+                <view class="delorder" wx:if="{{item.orderStatus ==3 || item.orderStatus ==4}}">查看详情</view>
+                <view class="dopay copyorder" wx:if="{{item.orderStatus !=0 && item.orderStatus !=5}}">复制单号</view>
+                <!--<view class="sendorder">发送订单</view>-->
+            </view>
+        </view>
+        </repeat>
+    </scroll-view>
+</template>
+<script>
+    import wepy from 'wepy';
+    import tip from '@/utils/tip';
+    import {
+        SYSTEM_INFO,
+        USER_SPECICAL_INFO,
+        USER_INFO,
+        HOST_URL,
+        IMG_URL
+    } from '@/utils/constant';
+    export default class Ordertopay extends wepy.page{
+        config = {
+            navigationBarTitleText: '我的订单',
+        }
+        data={
+            selectid:0,
+            orderlist:[],
+            windowHeight:'',
+            page:1,
+            size:10,
+            totalpage:1,
+            IMG_URL:IMG_URL
+        }
+        async getOrderBySelectId(id){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'order/findByOrderStatus',
+                method: 'GET',
+                data:{'openid':user_info.openId,'orderStatus':id || 6,'page':this.page,'size':this.size||10},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        res.data.data = this.Fixed(res.data.data)
+                        this.orderlist = res.data.data
+                        this.page++
+                        this.totalpage++
+                        this.$apply()
+                    }else{
+                        this.orderlist=[]
+                        this.$apply()
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        Fixed(val){
+            for(var i=0;i<val.length;i++){
+                for(var l=0;l<val[i].orderDetailList.length;l++){
+                    val[i].orderDetailList[l].detailTaxes = parseFloat(val[i].orderDetailList[l].detailTaxes.toFixed(2))
+                }
+            }
+            return val
+        }
+        async CancelOrder(id,index){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'order/cancel',
+                method: 'GET',
+                data:{'openid':user_info.openId,'orderId':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        tip.success('已取消订单')
+                        const list = [...this.orderlist]
+                        list.splice(index,1)
+                        this.orderlist = list
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async toPay(id,index){
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'/pay/unifiedOrder',
+                method:'POST',
+                data:{'orderId':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.data){
+                        this.doPay(res.data.data,index)
+                        this.$apply()
+                    }
+                }
+            })
+        }
+        async doPay(data,index){
+            let that = this
+            wepy.requestPayment({
+                appId:data.appid,
+                timeStamp: data.timeStamp,
+                nonceStr: data.nonceStr,
+                package: data.package,
+                signType: 'MD5',
+                paySign: data.paySign,
+                success:function(res){
+                    tip.toast('支付成功')
+                    const list = [...that.orderlist]
+                    list.splice(index,1)
+                    that.orderlist = list
+                    that.$apply()
+                },
+                fail:function(res){
+                    tip.error('支付失败')
+                }
+            })
+        }
+        changeOrderStatus(id,status){
+            for(var i=0;i<this.orderlist.length;i++){
+                if(this.orderlist[i].orderId == id){
+                    this.orderlist[i].orderStatus = status
+                }
+            }
+            this.$apply()
+        }
+        onLoad(option){
+            this.windowHeight = wepy.getStorageSync('systemInfo').windowHeight
+            option.selectid?option.selectid:option.selectid=6
+            this.selectid= option.selectid
+            this.getOrderBySelectId(option.selectid)
+        }
+        methods={
+            async cancleOrder(id,index){
+                await tip.confirm('确认取消订单吗')
+                this.CancelOrder(id,index)
+            },
+            changeCate(id){
+                if(this.selectid == id){
+                    return ''
+                }else{
+                    this.selectid = id
+                }
+                this.page=1
+                this.totalpage=1
+                this.getOrderBySelectId(this.selectid)
+            },
+            topay(id,index){
+                this.toPay(id,index)
+            }
+        }
+    }
+</script>
+<style lang="less">
+    .hidden {
+        display: none;
+    }
+    .top{
+        width: 100%;
+        height: 75rpx;
+        overflow: hidden;
+        font-size: 26rpx;
+        font-weight: 600;
+        text-align: center;
+        line-height: 70rpx;
+        .classify{
+            width: 100%;
+            height: 70rpx;
+            display: flex;
+        }
+        .search{
+            float: left;
+            width: 67rpx;
+            height: 70rpx;
+            .iconsearch{
+                margin: 18rpx 10rpx;
+            }
+        }
+        .title{
+            display: inline-block;
+            color: #777777;
+            width: 125rpx;
+            height: 70rpx;
+            margin-left: 3rpx;
+        }
+        .select{
+          color:red;
+          border-bottom:5rpx red solid;
+          transition: .5s;
+
+        }
+    }
+    .orderlist{
+        display: flex;
+        width: 100%;
+        background: #f7f7f7;
+        height: 100%;
+        .order{
+            background: white;
+            width: 98%;
+            margin: 20rpx auto;
+            overflow: hidden;
+            .orderinfo{
+                overflow: hidden;
+                text-align: center;
+                border-bottom-color: #f7f7f7;
+                border-bottom-style: solid;
+                border-bottom-width: 5rpx;
+            }
+            .orderid{
+                line-height: 50rpx;
+                margin-left: 15rpx;
+                height: 50rpx;
+                width: 70%;
+            }
+            .ordertime{
+                float: left;
+                line-height: 50rpx;
+                margin-left: 15rpx;
+                height: 50rpx;
+                width: 70%;
+            }
+            .ordertitle{
+                float: left;
+                font-weight: 600;
+                font-size: 26rpx;
+            }
+            .ordernumber{
+                float: left;
+                margin-left: 10rpx;
+                font-weight:500;
+                font-size: 24rpx;
+                color: #808080;
+            }
+            .orderstatus{
+                float: left;
+                width: 200rpx;
+                height: 50rpx;
+                font-size: 28rpx;
+                color: red;
+                .order_donepay{
+                    color: green;
+                }
+            }
+        }
+        .shop{
+            height: 200rpx;
+            border-bottom-color: #f7f7f7;
+            border-bottom-style: solid;
+            border-bottom-width: 5rpx;
+            .shopimage{
+                float: left;
+                margin-left: 10rpx;
+                width: 200rpx;
+                height: 200rpx;
+                .shopimg{
+                    width: 200rpx;
+                    height: 200rpx;
+                }
+            }
+            .shopinfo{
+                font-size: 24rpx;
+                float: left;
+                width: 70%;
+                height: 200rpx;
+                .shoptitle{
+                    font-size: 24rpx;
+                    font-weight: 600;
+                    margin: 20rpx 0 10rpx 15rpx;
+                    width: 95%;
+                    height: 45rpx;
+                    overflow:hidden; //超出一行文字自动隐藏
+                    text-overflow:ellipsis;//文字隐藏后添加省略号
+                    white-space:nowrap;
+                }
+                .shopprice{
+                    margin: 0 0 10rpx 15rpx;
+                    width: 50%;
+                    height: 45rpx;
+                }
+                .totalprice{
+                    float: left;
+                    color: red;
+                    margin: 0 0 10rpx 15rpx;
+                    width: 50%;
+                    height: 45rpx;
+                }
+                .shopnum{
+                    font-size: 28rpx;
+                    float: left;
+                    width: 20rpx;
+                    margin-left: 160rpx;
+                }
+            }
+        }
+    }
+    .orderbutton{
+        display: flex;
+        float: right;
+        width: 98%;
+        margin: 0 auto;
+        text-align: center;
+        line-height: 70rpx;
+        font-size: 29rpx;
+        height: 70rpx;
+        background: white;
+        .ordertotalprice{
+            display: flex;
+            font-size: 32rpx;
+            width: 220rpx;
+            .redfont{
+                color: #de0000;
+            }
+        }
+        .doback{
+            margin: 10rpx 10rpx 10rpx 320rpx;
+            width: 180rpx;
+            line-height: 50rpx;
+            border: solid #cccccc 3rpx;
+            border-radius: 10rpx;
+        }
+        .delorder{
+            margin: 10rpx 10rpx 10rpx 130rpx;
+            width: 180rpx;
+            line-height: 50rpx;
+            border: solid #cccccc 3rpx;
+            border-radius: 10rpx;
+        }
+        .dopay{
+            color: white;
+            margin: 10rpx 10rpx 10rpx 15rpx;
+            width: 180rpx;
+            line-height: 50rpx;
+            background: red;
+            border-radius: 10rpx;
+        }
+        .copyorder{
+            background:green;
+        }
+    }
+</style>

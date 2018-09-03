@@ -1,0 +1,557 @@
+<template>
+    <view class="center">
+        <span class="identification">集栈</span>
+        <input class="searchinput" placeholder="搜索微信昵称或收件人名" placeholder-class="placeholderfont">
+        <view class="searchbutton">搜索</view>
+    </view>
+    <view class="top">
+        <form bindsubmit="formSubmit">
+            <view class="info">
+                <view class="inforealname">
+                    <input name="receiver" class="default" placeholder="姓名" value="{{receiver}}" bindinput="inputreceiver">
+                </view>
+            </view>
+            <view class="info">
+                <input name="receiverNickname" class="default" placeholder="微信昵称" value="{{receiverNickname}}" bindinput="inputreceiverNickname">
+            </view>
+            <view class="info">
+                <view class="infophone">
+                    <input name="phone" class="default" placeholder="手机号" value="{{phone}}" bindinput="inputphone">
+                </view>
+            </view>
+            <view class="info">
+                <view @tap="openAddressPicker">{{province ? province.name : '省'}}   {{city ? city.name : '市' }}   {{area ? area.name : '区' }}<image class="pointimg" src="../images/bottompoint.png"></image></view>
+                <areaPicker @areaArray.user="areaPickerArray"></areaPicker>
+            </view>
+            <view class="info">
+                <input class="infoaddr" name="detailAddr" placeholder="请输入具体地址" placeholder-class="infoaddrplaceholder" value="{{detailAddr}}" bindinput="inputdetailAddr">
+            </view>
+            <view class="autoinput">
+                <view class="autotitle">智能地址填写</view>
+                <textarea wx:if="{{hideText}}" class="autoinput1" placeholder="粘贴整段地址，自动识别姓名、电话和地址 例:集小栈，13200000000，浙江省杭州市余杭区某某街道某某大厦111号。\n注意:由于中国海关清关要求，收件人姓名必须为真实姓名，切勿使用昵称/别名/先生/小姐" placeholder-class="autoplacehold" value="{{contentadd}}"  bindinput="setcontentadd"></textarea>
+                <view class="autobutton"><view class="infoautobutton" @tap="clearinput">清除</view><view class="infoautobutton" @tap="autoinput">智能生成</view></view>
+            </view>
+            <view class="submitbutton">
+                <button class="submit" formType="submit">保存</button>
+            </view>
+        </form>
+    </view>
+    <view class="reclist">
+        <repeat for="{{ receiveinfo }}" key="index" index="index" item="item">
+            <view class="reclist-itm">
+                <view class="address" @tap="tapSelAddress" data-id="{{item.id}}">
+                    <view class="nickname">微信昵称:<view class="nickname1">{{item.receiverNickname}}</view></view>
+                    <view class="addAndphone">{{item.receiver}} <view class="realname">{{item.phone}}</view></view>
+                    <view class="address_detail">{{item.province}} {{item.city}} {{item.area}} {{item.detailAddr}}</view>
+                </view>
+                <view class="addressbutton">
+                    <view class="addbutton" @tap="editAddress" data-id="{{item.id}}" data-index="{{index}}"><image class="edit" src="../images/edit.png" /></view><view class="addbutton" @tap="delAddress" data-id="{{item.id}}" data-index="{{index}}"><image class="delete" src="../images/delete.png" /></view>
+                </view>
+            </view>
+        </repeat>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+    import tip from '@/utils/tip';
+    import {
+        HOST_URL,
+        ADDRESS_ID
+    } from '@/utils/constant';
+    import AreaPicker from "@/components/wepy-area-picker"
+    export default class  Addresslistrecv extends wepy.page {
+        data = {
+            area:{code: 110101, name: "东城区"},
+            city:{code:110100,name:'北京市'},
+            province:{code:110000,name:'北京市'},
+            id:'',
+            receiver:'',
+            receiverNickname:'',
+            phone:'',
+            detailAddr:'',
+            flag:'',
+            receiveinfo:[],
+            windowHeight:'',
+            contentadd:'',
+            page:1,
+            size:5,
+            totalpage:1,
+            optionfrom:'',
+            hideText: true
+        }
+        components = {
+            areaPicker: AreaPicker
+        }
+        onLoad(option){
+            this.optionfrom = option.from==undefined?"":option.from;
+            var height = wepy.getStorageSync('systemInfo');
+            this.windowHeight = height.windowHeight;
+            this.getReceiver()
+            this.$apply()
+        }
+        async getReceiver(){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'addr/findAllByOpenid',
+                method:'GET',
+                data:{'openid':user_info.openId,'page':this.page,'size':this.size||10},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        this.receiveinfo = [...this.receiveinfo, ...res.data.data.data];
+                        //this.receiveinfo = res.data.data.data
+                        this.page++
+                        this.totalpage = res.data.data.totalpage
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+
+        async getAutoInput(address){
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'address/resolve',
+                method:'GET',
+                data:{'address':address},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        let result = res.data.data.data[0]
+                        this.province.name = result.province_name
+                        this.city.name = result.city_name
+                        this.area.name = result.county_name
+                        this.detailAddr = result.detail
+                        this.phone = result.mobile || result.phone
+                        this.receiver = result.name
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        onReachBottom(){
+            let that = this
+            if(that.page>that.totalpage){
+                tip.error('没有更多了')
+                return ;
+            }else{
+                that.getReceiver()
+            }
+        }
+        async delAddress(id,index) {
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'addr/delete',
+                method:'GET',
+                data:{'id':id,'openid':user_info.openId},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code == 0){
+                        this.receiveinfo.splice(index,1)
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        openAddressPicker() {
+            this.hideText = false
+            this.$invoke('areaPicker', 'openAddressPicker');
+        }
+        clearInput(){
+            this.receiverNickname = ''
+            this.receiver = ''
+            this.phone = ''
+            this.detailAddr = ''
+            this.flag =''
+            this.contentadd=''
+            this.$apply()
+        }
+        methods = {
+            formSubmit(e){
+                let that = this
+                let receiverNickname = e.detail.value.receiverNickname
+                let receiver = e.detail.value.receiver
+                let phone = e.detail.value.phone
+                let infoaddr = e.detail.value.detailAddr
+                let user_info = wepy.getStorageSync('USER_INFO')
+                if(infoaddr==''){
+                    tip.alert('请输入详细地址')
+                    return ''
+                }
+
+                if(phone=='' && phone.length<7 && phone.length>11){
+                    tip.alert('请输入正确的手机号')
+                    return ''
+                }
+                if(receiverNickname.length<1 && receiverNickname.length>10){
+                    tip.alert('请输入1-10字微信昵称')
+                    return ''
+                }
+                if(receiver=='' && receiver.length<1 && receiver.length>4){
+                    tip.alert('请输入1-4字姓名')
+                    return ''
+                }
+                tip.loading()
+                if(this.flag=='edit'){
+                    wepy.request({
+                        url:HOST_URL+'/addr/update',
+                        method: 'POST',
+                        data:{'openid':user_info.openId,'id':this.id,'receiverNickname':receiverNickname,'receiver':receiver,'phone':phone,'province':that.province.name,'city':that.city.name,'area':that.area.name,'detailAddr':infoaddr},
+                        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        complete:(res)=>{
+                            if(res.data.code==0){
+                                let id = res.data.data.id
+                                for(var i=0;i<this.receiveinfo.length;i++){
+                                    if(this.receiveinfo[i].id == id){
+                                        this.receiveinfo[i] = res.data.data
+                                    }
+                                }
+                                this.$apply()
+                            }else{
+                                tip.error(res.data.msg)
+                            }
+                        }
+                    })
+                }else{
+                    wepy.request({
+                        url:HOST_URL+'/addr/save',
+                        method: 'POST',
+                        data:{'openid':user_info.openId,'receiverNickname':receiverNickname,'receiver':receiver,'phone':phone,'province':that.province.name,'city':that.city.name,'area':that.area.name,'detailAddr':infoaddr},
+                        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        complete:(res)=>{
+                            if(res.data.code==0){
+                                this.receiveinfo=[]
+                                this.page=1
+                                this.totalpage=1
+                                this.getReceiver()
+                                this.$apply()
+                            }else{
+                                tip.error(res.data.msg)
+                            }
+                        }
+                    })
+                }
+                this.clearInput()
+                tip.loaded()
+            },
+            tapSelAddress(e) {
+                var id = e.currentTarget.dataset.id;
+                if(this.optionfrom == 'my'){
+                    wepy.switchTab({
+                        url: '/pages/my'
+                    })
+                }else{
+                    wepy.setStorageSync(ADDRESS_ID,id);
+                    wepy.redirectTo({
+                        url: "/pages/comfire_order?from=selAdd"
+                    })
+                }
+            },
+            editAddress(e){
+                let index = e.currentTarget.dataset.index
+                this.id = e.currentTarget.dataset.id
+                this.province.name= this.receiveinfo[index].province
+                this.city.name= this.receiveinfo[index].city
+                this.area.name= this.receiveinfo[index].area
+                this.receiverNickname = this.receiveinfo[index].receiverNickname
+                this.receiver = this.receiveinfo[index].receiver
+                this.phone = this.receiveinfo[index].phone
+                this.detailAddr = this.receiveinfo[index].detailAddr
+                this.flag = 'edit'
+                this.$apply()
+                if (wx.pageScrollTo) {
+                    wx.pageScrollTo({
+                        scrollTop: 0
+                    })
+                }else{
+                    tip.alert('请到顶部修改信息')
+                }
+            },
+            areaPickerArray(province, city, area,flag) {
+                if(flag) {
+                    this.province = province;
+                    this.city = city;
+                    this.area = area;
+                    this.provinceCode = province.code;
+                    this.cityCode = city.code;
+                    this.areaCode = area.code;
+                }
+                this.hideText = true
+                this.$apply();
+            },
+            setcontentadd(e){
+                this.contentadd = e.detail.value
+                this.$apply()
+            },
+            autoinput(){
+                if(this.contentadd==''){
+                    return ''
+                }
+                this.getAutoInput(this.contentadd)
+            },
+            inputphone(e){
+                this.phone = e.detail.value
+            },
+            inputdetailAddr(e){
+                this.detailAddr = e.detail.value
+            },
+            inputreceiverNickname(e){
+                this.receiverNickname = e.detail.value
+            },
+            inputreceiver(e){
+                this.receiver = e.detail.value
+            },
+            clearinput(){
+                this.clearInput()
+            },
+            delAddress(e) {
+                let index = e.currentTarget.dataset.index
+                let id = e.currentTarget.dataset.id
+                this.delAddress(id,index)
+            }
+        }
+    }
+
+</script>
+
+<style lang="less">
+    page{
+        background: #f7f7f7;
+    }
+    .top{
+        width: 97%;
+        background-color: #000;
+        margin: 30rpx auto;
+        border-radius:22rpx;
+        font-size: 34rpx;
+        overflow: hidden;
+        color: #fff;
+        .info{
+            display: flex;
+            width: 95%;
+            height: 70rpx;
+            line-height: 70rpx;
+            margin: 10rpx auto;
+            border-bottom: 1rpx #efefef dashed;
+            .default{
+                margin-top: 7rpx;
+                font-size: 34rpx;
+            }
+            .infoname{
+                color: #353535;
+                margin-right: 20rpx;
+            }
+            .inforealname{
+                width: 150rpx;
+                height: 60rpx;
+                text-align: left;
+            }
+            .pointimg{
+                margin-top: 10rpx;
+                margin-left: 300rpx;
+                height: 40rpx;
+                width: 40rpx;
+                right:30rpx;
+                text-align: center;
+            }
+            .infoaddr{
+                width: 95%;
+            }
+            .infoaddrplaceholder{
+                font-size: 34rpx;
+                text-align: left;
+            }
+        }
+        .autoinput{
+            width: 95%;
+            height: 477rpx;
+            margin: 10rpx auto;
+            float: none;
+            overflow: hidden;
+            .autotitle{
+                float: inherit;
+                width: 400rpx;
+                margin-top: 20rpx;
+                margin-left:10rpx;
+                color: white;
+            }
+            .autoinput1{
+                float: inherit;
+                height: 300rpx;
+                width: 93%;
+                color: black;
+                margin: 10rpx auto;
+                border-radius: 10rpx;
+                background-color: white;
+                padding:2% 3%;
+                word-break:break-all;
+                border:2rpx #efefef dashed;
+            }
+            .autoplacehold{
+                text-align: center;
+                font-size: 28rpx;
+            }
+            .autobutton{
+                display: flex;
+                text-align: center;
+                font-size: 30rpx;
+                right: 20rpx;
+                margin-bottom: 20rpx;
+            }
+            .infoautobutton{
+                margin-left: 15rpx;
+                background-color: #b4b4b4;
+                padding: 10rpx 30rpx;
+                border-radius: 5rpx;
+                color: #fff;
+                font-weight: 600;
+            }
+            .infoautobutton:nth-of-type(1){
+                background: #38ace4;
+            }
+            .infoautobutton:nth-of-type(2){
+                background: #2f9833;
+            }
+        }
+        .submitbutton{
+            width: 95%;
+            text-align: center;
+            margin: 25rpx auto;
+            font-size: 33rpx;
+            color: white;
+            .submit{
+                background-color: #ff3a4e;
+                color: white;
+                width: 100%;
+                font-weight: 600;
+                line-height: 86rpx;
+                border-radius: 10rpx;
+            }
+        }
+    }
+    .center{
+        width: 100%;
+        background-color: #000;
+        padding: 15rpx auto;
+        height: 70rpx;
+        overflow: hidden;
+        .searchinput{
+            display: flex;
+            float: left;
+            margin: 10rpx 0rpx 10rpx 0rpx;
+            width: 74%;
+            background-color: #fff;
+            border-radius: 22rpx;
+            .placeholderfont{
+                color: #b1b1b1;
+                font-size: 28rpx;
+                margin-left: 70rpx;
+            }
+        }
+        .identification{
+            width:10%;
+            float:left;
+            color:white;
+            line-height:70rpx;
+            font-size:32rpx;
+            margin-left:10rpx;
+        }
+        .searchbutton{
+            width:10%;
+            color:white;
+            margin-left:655rpx;
+            line-height:70rpx;
+            font-size:31rpx;
+        }
+    }
+    .reclist{
+
+    }
+    .address{
+        width: 97%;
+        background-color: #ccc;
+        margin: 20rpx auto;
+        font-size: 34rpx;
+        overflow: hidden;
+        border-radius:22rpx;
+    }
+    .add{
+        height: 100rpx;
+        display: block;
+        width: 95%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        bottom: 20rpx;
+        margin: 0 auto;
+    }
+    .button{
+        text-align: center;
+        line-height: 100rpx;
+    }
+    .addAndphone{
+        display: flex;
+        margin-top: 25rpx;
+        margin-left: 30rpx;
+        float: left;
+        text-align: center;
+        .realname{
+            display: flex;
+            width: 300rpx;
+            margin-left: 100rpx;
+        }
+    }
+    .nickname{
+        display: flex;
+        margin-top: 20rpx;
+        margin-left: 30rpx;
+        .nickname1{
+            float: left;
+            margin-left: 30rpx;
+        }
+    }
+    .address_detail{
+        margin: 10rpx 40rpx 10rpx 30rpx;
+        float: left;
+    }
+    .addinfo{
+        margin: auto 0;
+        height: 125rpx;
+    }
+    .addressbutton{
+        float: right;
+        margin-bottom: 10rpx;
+        image{
+            width:40rpx;
+            height:40rpx;
+        }
+        .addbutton{
+            margin-right: 20rpx;
+            text-align: center;
+            color: white;
+            float: left;
+            width: 75rpx;
+            font-size: 30rpx;
+        }
+    }
+    .reclist-itm{
+        position: relative;
+        color:#696969;
+    }
+    .addressbutton{
+        position:absolute;
+        top:24rpx;
+        right:0;
+    }
+</style>

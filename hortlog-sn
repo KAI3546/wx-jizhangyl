@@ -1,0 +1,31 @@
+[33mcommit 761cf4a6f1a62a1d6e2921e3278f6c83c1abe491[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: KAI <huangkai@jizhangyl.com>
+Date:   Thu Aug 30 10:59:57 2018 +0800
+
+    第一次提交代码2018年8月30日10:59:47
+
+[33mcommit 1180adc55820a40279c7fbe392d333c3b4e8754e[m[33m ([m[1;31morgin/master[m[33m)[m
+Author: KAI <huangkai@jizhangyl.com>
+Date:   Fri Jul 20 15:49:58 2018 +0800
+
+    添加了商品详情界面，商品图片跳转到商品详情界面。
+    优化了我的界面显示效果。                        -KAI
+
+[33mcommit 9930c280df4312accf63496469e8d3339230ca94[m
+Author: KAI <huangkai@jizhangyl.com>
+Date:   Wed Jul 18 20:01:44 2018 +0800
+
+    新增加了一个主页界面，并修改了部分bug。优化了界面
+
+[33mcommit 109cc2fd9e20777d2381da451c520565a1d2a78f[m
+Author: KAI <huangkai@jizhangyl.com>
+Date:   Mon Jul 16 17:16:55 2018 +0800
+
+    第二次修改提交代码，新写了一个“我的“模块微信小程序前台界面。
+    --KAI
+
+[33mcommit 4846c9dc2bb046580201ee4b123a22a2e8b0d3f5[m
+Author: KAI <huangkai@jizhangyl.com>
+Date:   Sun Jul 15 12:20:08 2018 +0800
+
+    第一次初始化 微信小程序代码提交

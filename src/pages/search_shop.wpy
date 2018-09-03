@@ -2,7 +2,7 @@
 	<view class="top_search">
 	  <image class='logo_img' src="../images/logo.png"></image>
 	  <view class="search_input">
-	  	<input type="text" name="" value="{{queryKeyword}}" placeholder="输入商品名或 JanCode" bindinput="handleValue" />
+	  	<input type="text" name="" value="{{queryKeyword}}" focus="true" placeholder="输入商品名或 JanCode" bindinput="handleValue" confirm-type="search" @confirm="handleSearch"/>
 	    <icon class="icon_style" type="search" size="15" color="#7b7b7b"></icon>
 	  </view>
 	  <i class="text_font" @tap="handleSearch">搜索</i>
@@ -24,66 +24,56 @@
 <script>
 	import wepy from 'wepy'
 	import tip from '@/utils/tip'
+	import api from '@/api/api'
 	import {
-	    HOST_URL,
-	    IMG_URL
+    HOST_URL,
+    IMG_URL
 	} from '@/utils/constant'
 	export default class SearchShop extends wepy.page{
 		data={
 			queryKeyword:'',
 			goodsList:[]
-
 		}
 		async getShopByKeyword(name) {
-			tip.loading()
-			await wepy.request({
-				url:HOST_URL+'/shop/findByName',
-				method:'GET',
-				data:{'name':name},
-	            header: { 'content-type': 'application/x-www-form-urlencoded'},
-	            complete:(res)=>{
-	            	if(res.data.code==0){
-	            		if(res.data.data.length == 0) {
-	            			tip.error('没这个商品哦！')
-	            		} else {
-		            		this.goodsList = res.data.data
-	            			this.$apply()            			
-	            		}
-	            	}else{
-	            		tip.error(res.data.msg)
-	            	}
-	            }
+			let res = await api.getShopByKeyword({
+				query: {
+					name: name
+				}
 			})
-			tip.loaded()
+			if(res.data.code==0){
+    		if(res.data.data.length == 0) {
+    			tip.error('没这个商品哦！')
+    		} else {
+      		this.goodsList = res.data.data
+    			this.$apply()            			
+    		}
+    	}else{
+    		tip.error(res.data.msg)
+    	}
 		}
 		async addShopToCart(id){
-			tip.loading()
-	            let userid = wepy.getStorageSync('USER_INFO')
-	            let data = {'openid':userid.openId,'productId':id};
-	            await wepy.request({
-	                url: HOST_URL+'cart/add',
-	                method:'POST',
-	                data:data,
-	                header: { 'content-type': 'application/x-www-form-urlencoded'},
-	                complete:(res)=>{
-	                    if(res.data.code==0){
-	                        tip.success('加购成功');
-	                    }else{
-	                        tip.error(res.data.msg);
-	                    }
-	                }
-	            })
-	            tip.loaded()
+	  	let userid = wepy.getStorageSync('USER_INFO')           
+	  	let res = await api.addShopToCart({
+	  		query: {
+	  			openid: userid.openId,
+	  			productId: id
+	  		}
+	  	})
+	  	if(res.data.code==0){
+        tip.success('加购成功');
+      }else{
+        tip.error(res.data.msg);
+      }
 		}
 		isNumber (val) {
-	        var regPos = /^\d+(\.\d+)?$/
-	        var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/
-	        if (regPos.test(val) || regNeg.test(val)) {
-	          return true
-	        } else {
-	          return false
-	        }
-      	}
+      var regPos = /^\d+(\.\d+)?$/
+      var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/
+      if (regPos.test(val) || regNeg.test(val)) {
+        return true
+      } else {
+        return false
+      }
+  	}
 		methods={
 			handleValue(e){
 				this.queryKeyword = e.detail.value
@@ -101,8 +91,8 @@
 				this.getShopByKeyword(this.queryKeyword)
 			},
 			addCart(id){
-	            this.addShopToCart(id)
-	        }
+        this.addShopToCart(id)
+      }
 		}
 	}
 </script>

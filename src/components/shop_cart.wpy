@@ -15,12 +15,19 @@
                         <view class="buy-num">
                             <view class="jian-btn {{item.productQuantity==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{item.productQuantity}}" data-id="{{item.id}}">-</view>
                             <input type="number" class="shop_num" style="width: 60rpx" value="{{item.productQuantity}}" disabled/>
-                            <view class="jia-btn {{item.productQuantity==999? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{item.productQuantity}}" data-id="{{item.id}}">+</view>
+                            <view class="jia-btn {{item.productQuantity==999? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{index}}" data-id="{{item.id}}">+</view>
                         </view>
                     </view>
                 </swipeDelete>
             </view>
         </repeat>
+    </view>
+    <view class="shoptips" wx:if="{{shopCartList.length == 0}}">
+        <view class="shopCart-tips">
+        <image src="../images/shoptips.png" />
+        <text>购物车里还没有商品</text>
+      </view>
+      <view class="shop-btn" @tap="gotoStop()">去逛逛</view>
     </view>
     <view class="totalInfo">
         <view class="Info">货值: ￥{{totalPriceShop}}</view>
@@ -42,6 +49,7 @@
 <script>
 import wepy from 'wepy'
 import tip from '@/utils/tip'
+import api from '@/api/api'
 import {
     HOST_URL,
     IMG_URL
@@ -121,118 +129,199 @@ export default class ShopCart extends wepy.component{
         }
     }
     onLoad(){
+        console.log('11onload')
         this.windowHeight = wepy.getStorageSync('systemInfo').windowHeight
         this.$apply()
     }
     async getCartList(){
         //let that = this
         let id = wepy.getStorageSync('USER_INFO');
-        tip.loading();
-        await wepy.request({
-            url:HOST_URL+'/cart/list',
-            method:'GET',
-            data:{'openid':id.openId},
-            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            complete:(res)=>{
-                console.log(res)
-                if(res.data.code==0){
-                    this.shopCartList = res.data.data
+//         tip.loading();
+//         await wepy.request({
+//             url:HOST_URL+'/cart/list',
+//             method:'GET',
+//             data:{'openid':id.openId},
+//             header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//             complete:(res)=>{
+//                 console.log(res)
+//                 if(res.data.code==0){
+//                     this.shopCartList = res.data.data
+// //                    for(var i = 0;i<this.shopCartList.length;i++){
+// //                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+// //                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+// //                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+// //                    }
+// //                    this.totalPriceYf = (this.totalWeight/1000)*35
+//                     this.$apply();
+//                 }else{
+//                     tip.error(res.data.msg)
+//                 }
+//             }
+//         })
+//         tip.loaded();
+        let res = await api.getCartList({
+            query: {
+                openid: id.openId
+            }
+        })
+        if(res.data.code==0){
+            this.shopCartList = res.data.data
 //                    for(var i = 0;i<this.shopCartList.length;i++){
 //                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
 //                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
 //                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
 //                    }
 //                    this.totalPriceYf = (this.totalWeight/1000)*35
-                    this.$apply();
-                }else{
-                    tip.error(res.data.msg)
+            let flag = 0
+            for (var i=0; i < this.shopCartList.length; i++) {
+                if (this.shopCartList[i].productStatus){
+                    flag += 1
                 }
             }
-        })
-        tip.loaded();
+            flag == this.shopCartList.length ? this.allChecked = true : this.allChecked = false
+            this.$apply();
+        }else{
+            tip.error(res.data.msg)
+        }
     }
     async addShop(id){
         let user_info = wepy.getStorageSync('USER_INFO')
-        tip.loading()
-        wepy.request({
-            url:HOST_URL+'/cart/increase',
-            method:'GET',
-            data:{'cartCellId':id,'openid':user_info.openId},
-            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            complete:(res)=>{
-                if(res.data.code==0){
-                    for(var i=0;i<this.shopCartList.length;i++){
-                        if(this.shopCartList[i].id == id){
-                            this.shopCartList[i].productQuantity++
+//         tip.loading()
+//         wepy.request({
+//             url:HOST_URL+'/cart/increase',
+//             method:'GET',
+//             data:{'cartCellId':id,'openid':user_info.openId},
+//             header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//             complete:(res)=>{
+//                 if(res.data.code==0){
+//                     for(var i=0;i<this.shopCartList.length;i++){
+//                         if(this.shopCartList[i].id == id){
+//                             this.shopCartList[i].productQuantity++
+// //                            for(var i = 0;i<this.shopCartList.length;i++){
+// //                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+// //                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+// //                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+// //                            }
+// //                            this.totalPriceYf = (this.totalWeight/1000)*35
+//                             this.$apply()
+//                         }
+//                     }
+//                 }else{
+//                     tip.error(res.data.msg)
+//                 }
+//             }
+//         })
+//         tip.loaded()
+        let res = await api.addShop({
+            query: {
+                cartCellId: id,
+                openid: user_info.openId
+            }
+        })
+        if(res.data.code==0){
+            for(var i=0;i<this.shopCartList.length;i++){
+                if(this.shopCartList[i].id == id){
+                    this.shopCartList[i].productQuantity++
 //                            for(var i = 0;i<this.shopCartList.length;i++){
 //                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
 //                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
 //                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
 //                            }
 //                            this.totalPriceYf = (this.totalWeight/1000)*35
-                            this.$apply()
-                        }
-                    }
-                }else{
-                    tip.error(res.data.msg)
+                    this.$apply()
                 }
             }
-        })
-        tip.loaded()
+        }else{
+            tip.error(res.data.msg)
+        }
     }
     async reduceShop(id){
         let user_info = wepy.getStorageSync('USER_INFO')
-        tip.loading()
-        wepy.request({
-            url:HOST_URL+'/cart/reduce',
-            method:'GET',
-            data:{'cartCellId':id,'openid':user_info.openId},
-            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            complete:(res)=>{
-                if(res.data.code==0){
-                    for(var i=0;i<this.shopCartList.length;i++){
-                        if(this.shopCartList[i].id == id){
-                            this.shopCartList[i].productQuantity--
-//                            for(var i = 0;i<this.shopCartList.length;i++){
-//                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
-//                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
-//                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
-//                            }
-//                            this.totalPriceYf = (this.totalWeight/1000)*35
-                            this.$apply()
-                        }
-                    }
-                }else{
-                    tip.error(res.data.msg)
-                }
+//         tip.loading()
+//         wepy.request({
+//             url:HOST_URL+'/cart/reduce',
+//             method:'GET',
+//             data:{'cartCellId':id,'openid':user_info.openId},
+//             header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//             complete:(res)=>{
+//                 if(res.data.code==0){
+//                     for(var i=0;i<this.shopCartList.length;i++){
+//                         if(this.shopCartList[i].id == id){
+//                             this.shopCartList[i].productQuantity--
+// //                            for(var i = 0;i<this.shopCartList.length;i++){
+// //                                this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+// //                                this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+// //                                this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+// //                            }
+// //                            this.totalPriceYf = (this.totalWeight/1000)*35
+//                             this.$apply()
+//                         }
+//                     }
+//                 }else{
+//                     tip.error(res.data.msg)
+//                 }
+//             }
+//         })
+//         tip.loaded()
+        let res = await api.reduceShop({
+            query: {
+                cartCellId: id,
+                openid: user_info.openId    
             }
         })
-        tip.loaded()
+        if(res.data.code==0){
+            for(var i=0;i<this.shopCartList.length;i++){
+                if(this.shopCartList[i].id == id){
+                    this.shopCartList[i].productQuantity--
+                    this.$apply()
+                }
+            }
+        }else{
+            tip.error(res.data.msg)
+        }
     }
     async deleteShop(id){
         let user_info = wepy.getStorageSync('USER_INFO')
-        tip.loading()
-        wepy.request({
-            url:HOST_URL+'/cart/delete',
-            method:'GET',
-            data:{'cartCellId':id,'openid':user_info.openId},
-            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            complete:(res)=>{
-                if(res.data.code==0){
-                    this.shopCartList = res.data.data
+//         tip.loading()
+//         wepy.request({
+//             url:HOST_URL+'/cart/delete',
+//             method:'GET',
+//             data:{'cartCellId':id,'openid':user_info.openId},
+//             header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+//             complete:(res)=>{
+//                 if(res.data.code==0){
+//                     this.shopCartList = res.data.data
+// //                    for(var i = 0;i<this.shopCartList.length;i++){
+// //                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
+// //                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
+// //                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
+// //                    }
+// //                    this.totalPriceYf = (this.totalWeight/1000)*35
+//                     this.$apply()
+//                 }else{
+//                     tip.error(res.data.msg)
+//                 }
+//             }
+//         })
+//         tip.loaded()
+        let res = await api.deleteShop({
+            query: {
+                cartCellId: id,
+                openid: user_info.openId
+            }
+        })
+       if(res.data.code==0){
+            this.shopCartList = res.data.data
 //                    for(var i = 0;i<this.shopCartList.length;i++){
 //                        this.totalPriceShop = this.totalPriceShop + this.shopCartList[i].productPrice * this.shopCartList[i].productQuantity
 //                        this.totalPriceGs = this.totalPriceGs + this.shopCartList[i].bcCprice * this.shopCartList[i].productQuantity
 //                        this.totalWeight = this.totalWeight + this.shopCartList[i].shopDweight * this.shopCartList[i].productQuantity
 //                    }
 //                    this.totalPriceYf = (this.totalWeight/1000)*35
-                    this.$apply()
-                }else{
-                    tip.error(res.data.msg)
-                }
-            }
-        })
-        tip.loaded()
+            this.$apply()
+        }else{
+            tip.error(res.data.msg)
+        } 
     }
     methods = {
         handleDelItem(e){
@@ -255,9 +344,18 @@ export default class ShopCart extends wepy.component{
             var id = e.currentTarget.dataset.id;
             var index = parseInt(e.currentTarget.dataset.index);
             this.shopCartList[index].productStatus = !this.shopCartList[index].productStatus
+            let flag = 0
+            for (var i=0; i < this.shopCartList.length; i++) {
+                if (this.shopCartList[i].productStatus){
+                    flag += 1
+                }
+            }
+            flag == this.shopCartList.length ? this.allChecked = true : this.allChecked = false
             this.$apply()
         },
         jiaBtnTap(e){
+            console.log(e)
+            var index = e.currentTarget.dataset.index;
             var id = e.currentTarget.dataset.id;
             //根据id找到要增加的商品 然后进行增加数量
 //            for (var i = 0;i<this.List.length;i++){
@@ -265,6 +363,10 @@ export default class ShopCart extends wepy.component{
 //                    this.List[i].num ++
 //                }
 //            }
+            if(this.totalPriceShop > 2000 || (this.totalPriceShop + this.shopCartList[index].productPrice) > 2000 ) {
+                tip.confirm('根据海关规定单个包裹不能超过2000元,请重新选择商品')
+                return
+            }
             if(e.currentTarget.dataset.index<999){
                 this.addShop(id)
             }else{
@@ -318,7 +420,12 @@ export default class ShopCart extends wepy.component{
         },
         getCartListMethod(){
             this.getCartList();
-        }
+        },
+        gotoStop(){
+          wepy.switchTab({
+            url: '/pages/index'
+        })
+}
     }
 }
 </script>
@@ -439,7 +546,44 @@ export default class ShopCart extends wepy.component{
         }
     }
 
-
+.shoptips{
+  text-align:center;
+  padding-top:2em;
+  position:absolute;
+  margin-top:70rpx;
+  width:80%;
+  left:10%;
+  right:10%;
+  .shopCart-tips{
+      width: 100%;
+      text-align: center;
+      text{
+        display:inline-block;
+        width:100%;
+        text-align:center;
+        font-weight:600;
+        color:#e6e6e6;
+      }
+    }
+    image{
+      display: inline-block;
+      width:250rpx;
+      height:250rpx;
+    }
+    .shop-btn{
+      background-color:#ff4242;
+      border-radius:7rpx;
+      color:white;
+      padding:15rpx 32rpx;
+      text-align:center;
+      text-decoration:none;
+      display:inline-block;
+      font-size:35rpx;
+      width:158rpx;
+      line-height:35rpx;
+      margin-top:2em;
+    }
+}
 .shopstyle{
     position: absolute;
     margin-top: 70rpx;

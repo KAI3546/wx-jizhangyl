@@ -1,0 +1,275 @@
+<template>
+    <view class="shop_detail">
+        <view class="shop_img">
+            <image src="{{shopInfo.shop_image}}" class="image_style"></image>
+        </view>
+        <view class="shop_name">{{shopInfo.shop_name}}</view>
+        <view class="shop_info clearfix"><view class="title1">市场零售价:</view><view class="title2">￥{{shopInfo.shop_lprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">商品JAN CODE:</view><view class="title2">{{shopInfo.shop_jan}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">供货价+关税:</view><view class="title2">￥{{priceAndcell}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">供货价:</view><view class="title2">￥{{shopInfo.shop_gprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">关税:</view><view class="title2">￥{{shopInfo.bc_cprice}}</view></view>
+        <view class="shop_info clearfix"><view class="title1">打包重量:</view><view class="title2">{{shopInfo.shop_dweight}}g</view></view>
+        <view class="shop_tip clearfix">（非商品实际重量，根据商品体积等综合计算得出）</view>
+    </view>
+    <view class="shop_content">
+        <view class="info_name">朋友圈文案:</view>
+        <view class="info_content">“{{shopInfo.wenan}}”</view>
+        <view class="info_copy" @tap="copywenan">点击复制</view>
+    </view>
+    <view class="shop_list">
+        <view class="{{show_status?'choice_jsname':'shop_jsname'}}" bindtap="choiceStatus" data-index='1'>图文素材</view>
+        <view class="{{show_status?'shop_jsname':'choice_jsname'}}" bindtap="choiceStatus" data-index='0'>参数规格</view>
+    </view>
+    <view class="image_list" wx:if="{{show_status}}">
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
+        <view class="shop_list_image"><image class="imagelist" src="../images/img8.jpg"></image></view>
+    </view>
+    <view class="format_info" wx:if="{{!show_status}}">
+        <view class="title_name1 no1">品牌</view>
+        <view class="title_name2 no1">{{shopInfo.brand_name}}</view>
+        <view class="title_name1">产地</view>
+        <view class="title_name2">日本</view>
+        <view class="title_name1">分类</view>
+        <view class="title_name2">{{shopInfo.cate_name}}</view>
+        <view class="title_name1">净含量</view>
+        <view class="title_name2">125ml</view>
+        <view class="title_name1">保质期</view>
+        <view class="title_name2">3年</view>
+        <view class="title_name1">功效</view>
+        <view class="title_name2">补水保湿</view>
+        <view class="title_name1">适用肌肤</view>
+        <view class="title_name2">任何肌肤</view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy'
+import tip from '@/utils/tip'
+import {
+    HOST_URL,
+    IMG_URL
+} from '@/utils/constant'
+export default class ShopDetail extends wepy.page{
+    data={
+        shop_id:'',
+        shopInfo:[],
+        show_status:1,
+    }
+    methods={
+        choiceStatus(e){
+            let title = e.currentTarget.dataset.index;
+            title=='0'?this.show_status=0:this.show_status=1;
+        },
+        copywenan(){
+            wepy.setClipboardData({
+                data:this.shopInfo.wenan,
+                success:(res)=>{
+                    tip.toast('复制成功')
+                },
+                fail:(res)=>{
+                    tip.alert('复制失败')
+                }
+            })
+        }
+    }
+    computed={
+        priceAndcell:function(){
+            let price = parseFloat(this.shopInfo.bc_cprice)+parseFloat(this.shopInfo.shop_gprice)
+            return price.toFixed(2)
+        }
+    }
+    config = {
+        navigationBarTitleText: '商品详情',
+    }
+    async getShopInfo(id){
+        let that = this
+        await wepy.request({
+            url:HOST_URL+'shop/detail',
+            method:'GET',
+            data:{'id':id},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code == 0){
+                    that.shopInfo = res.data.data
+                    that.$apply()
+                }else{
+                    tip.error('请重新刷新')
+                }
+            }
+        })
+    }
+
+    onLoad(options){
+        this.shop_id= options.id
+        this.getShopInfo(this.shop_id)
+    }
+}
+</script>
+<style lang="less">
+  .clearfix:before,
+  .clearfix:after{
+    content: " ";
+    display: table;
+    clear: both;
+  }
+    .shop_detail{
+        width: 100%;
+        overflow: hidden;
+    }
+    .shop_img{
+        height: 550rpx;
+        width: 550rpx;
+        margin: 0 auto;
+    }
+    .image_style{
+        height: 100%;
+        width: 100%;
+    }
+    .shop_name{
+        margin-top: 10rpx;
+        text-align: left;
+        font-size: 40rpx;
+        padding-left: 15rpx;
+        padding-right: 15rpx;
+    }
+    .shop_info{
+        font-size: 33rpx;
+        padding: 0 15rpx;
+        border-bottom: 1rpx #efefef dashed;
+        margin-top: 15rpx;
+        margin-bottom:15rpx;
+        padding-bottom:14rpx;
+      .title1{
+          width: 50%;
+          float: left;
+        }
+        .title2{
+          float: left;
+          width: 50%;
+          text-align:right;
+        }
+    }
+    .shop_tip{
+        font-size: 22rpx;
+        text-align: center;
+    }
+    .shop_content{
+        margin-top: 5rpx;
+        overflow: hidden;
+        width: 100%;
+        background-color: #f3f3f3;
+    }
+    .info_name{
+        margin-left: 8rpx;
+        height: 45rpx;
+        width: 160rpx;
+        font-size: 28rpx;
+    }
+    .info_content{
+        margin: 0 auto;
+        width: 650rpx;
+        font-size: 25rpx;
+    }
+    .info_copy{
+        background-color: #ff0000;
+        color: white;
+        height: 35rpx;
+        width: 140rpx;
+        font-size: 28rpx;
+        line-height: 35rpx;
+        text-align: center;
+        margin-top: 8rpx;
+        margin-left: 560rpx;
+        margin-bottom: 8rpx;
+        border-style: solid;
+        border-width: 1rpx;
+        border-color: #ff0000;
+        border-radius: 12rpx;
+    }
+    .choice_jsname{
+        width: 373rpx;
+        height: 70rpx;
+        background-color: black;
+        float: left;
+        border-right-color: white;
+        border-right-style: solid;
+        border-right-width: 1rpx;
+        text-align: center;
+        line-height: 70rpx;
+        color: white;
+        font-size: 28rpx;
+        font-weight: 600;
+        border-radius: 2rpx;
+    }
+    .shop_jsname{
+        width: 373rpx;
+        height: 66rpx;
+        background-color: white;
+        float: left;
+        border-right-color: white;
+        border-right-style: solid;
+        border-right-width: 1rpx;
+        border-bottom-color: black;
+        border-bottom-style: solid;
+        border-bottom-width: 4rpx;
+        text-align: center;
+        line-height: 70rpx;
+        color: black;
+        font-size: 28rpx;
+        font-weight: 600;
+    }
+    .image_list{
+        width: 100%;
+        overflow: hidden;
+    }
+    .shop_list_image{
+        float: left;
+        width: 50%;
+        height: 370rpx;
+    }
+    .imagelist{
+        width: 350rpx;
+        height: 350rpx;
+        margin-top: 10rpx;
+        margin-left: 10rpx;
+        border: solid black 4rpx;
+        border-radius: 4rpx;
+    }
+    .format_info{
+        font-size: 28rpx;
+        font-weight: 400;
+        margin-top: 80rpx;
+        overflow: hidden;
+        width: 100%;
+        color: #4d4d4d;
+
+    }
+    .title_name1{
+        margin-left: 20rpx;
+        width: 160rpx;
+        height: 60rpx;
+        float: left;
+        border-left: solid #dddddd 3rpx;
+        border-bottom: solid #dddddd 3rpx;
+        border-right: solid #dddddd 3rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        font-weight: 400;
+        text-align: center;
+    }
+    .title_name2{
+        float: left;
+        width: 540rpx;
+        height: 60rpx;
+        border-bottom: solid #dddddd 3rpx;
+        border-right: solid #dddddd 3rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        font-weight: 400;
+        text-align: center;
+    }
+    .no1{
+        border-top: solid #dddddd 3rpx;
+    }
+</style>

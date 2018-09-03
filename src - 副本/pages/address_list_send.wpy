@@ -1,0 +1,438 @@
+<template>
+    <view class="center">
+        <span class="identification">集栈</span>
+        <input class="searchinput" placeholder="搜索微信昵称或收件人名" placeholder-class="placeholderfont">
+        <view class="searchbutton">搜索</view>
+    </view>
+    <view class="top">
+        <form bindsubmit="formSubmit">
+            <view class="info">
+                <view class="inforealname">
+                    <input name="sender" class="default" placeholder="姓名" value="{{sender}}">
+                </view>
+                <view class="infophone">
+                    <input name="phone" class="default" placeholder="手机号" value="{{phone}}">
+                </view>
+            </view>
+            <view class="info">
+                <view class="infocheck" @tap="setDefault">
+                    <icon type="success" size="20" color="{{Checked?'#fe0000':'rgb(153,153,153)'}}" />
+                </view>
+                <view class="infodefault">设置为默认地址</view>
+            </view>
+            <view class="submitbutton">
+                <button class="submit" formType="submit">保存</button>
+            </view>
+        </form>
+    </view>
+    <view class="reclist">
+        <repeat for="{{ sendinfo }}" key="index" index="index" item="item">
+            <view  class="reclist-itm" wx:if="{{item.isDefault==1}}">
+                <view class="address" @tap="tapSelAddress" data-id="{{item.id}}">
+                    <view class="redDefault">[默认] </view> <view class="addAndphone">{{item.sender}} <view class="realname">{{item.phone}}</view></view>
+                </view>
+                <view class="addressbutton">
+                    <view class="addbutton" @tap="editAddress" data-id="{{item.id}}" data-index="{{index}}"><image class="edit" src="../images/edit.png" /></view><view class="addbutton" @tap="delAddress" data-id="{{item.id}}" data-index="{{index}}"><image class="delete" src="../images/delete.png" /></view>
+                </view>
+            </view>
+        </repeat>
+        <repeat for="{{ sendinfo }}" key="index" index="index" item="item">
+            <view  class="reclist-itm" wx:if="{{item.isDefault!=1}}">
+                <view class="address" @tap="tapSelAddress" data-id="{{item.id}}">
+                    <view class="addAndphone">{{item.sender}} <view class="realname">{{item.phone}}</view></view>
+                </view>
+                <view class="addressbutton">
+                    <view class="addbutton" @tap="editAddress" data-id="{{item.id}}" data-index="{{index}}"><image class="edit" src="../images/edit.png" /></view><view class="addbutton"><image class="delete" src="../images/delete.png" /></view>
+                </view>
+            </view>
+        </repeat>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+    import tip from '@/utils/tip';
+    import {
+        HOST_URL,
+        ADDRESS_ID
+    } from '@/utils/constant';
+    export default class  Addresslistrecv extends wepy.page {
+        data = {
+            id:'',
+            sender:'',
+            phone:'',
+            flag:'',
+            sendinfo:[],
+            windowHeight:'',
+            Checked:false,
+            page:1,
+            size:5,
+            totalpage:1
+        }
+        onLoad(){
+            var height = wepy.getStorageSync('systemInfo');
+            this.windowHeight = height.windowHeight;
+            this.getSender()
+            this.$apply()
+        }
+        async getSender(){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'sender/findAllByOpenid',
+                method:'GET',
+                data:{'openid':user_info.openId,'page':this.page,'size':this.size||5},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        this.sendinfo = [...this.sendinfo, ...res.data.data.data];
+                        //this.receiveinfo = res.data.data.data
+                        this.page++
+                        this.totalpage = res.data.data.totalpage
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async setDefaultAddress(id){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'sender/setDefault',
+                method:'GET',
+                data:{'openid':user_info.openId,'id':id},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        this.Checked = false
+                        this.getSender()
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+            tip.loaded()
+        }
+        async delSendAddress(id,index){
+            let user_info = wepy.getStorageSync('USER_INFO')
+            tip.loading()
+            await wepy.request({
+                url:HOST_URL+'sender/delete',
+                method:'GET',
+                data:{'id':id,'openid':user_info.openId},
+                header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                complete:(res)=>{
+                    if(res.data.code == 0){
+                        this.sendinfo.splice(index,1)
+                        this.$apply()
+                    }else{
+                        tip.error(res.data.msg)
+                    }
+                }
+            })
+
+        }
+        onReachBottom(){
+            let that = this
+            if(that.page>that.totalpage){
+                tip.error('没有更多了')
+                return ;
+            }else{
+                that.getSender()
+            }
+        }
+        clearInput(){
+            this.sender = ''
+            this.phone = ''
+            this.flag =''
+            this.$apply()
+        }
+        methods = {
+            formSubmit(e){
+                let that = this
+                let sender = e.detail.value.sender
+                let phone = e.detail.value.phone
+                let user_info = wepy.getStorageSync('USER_INFO')
+                if(sender.length<1 && sender.length>4){
+                    tip.alert('请输入1-4字姓名')
+                    return ''
+                }
+                if(phone.length<7 && phone.length>11){
+                    tip.alert('请输入正确的手机号')
+                    return ''
+                }
+                tip.loading()
+                if(this.flag=='edit'){
+                    wepy.request({
+                        url:HOST_URL+'/sender/update',
+                        method: 'POST',
+                        data:{'openid':user_info.openId,'id':this.id,'sender':sender,'phone':phone},
+                        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        complete:(res)=>{
+                            if(res.data.code==0){
+                                let id = res.data.data.id
+                                if(this.Checked){
+                                    this.page=1
+                                    this.totalpage=1
+                                    this.sendinfo=[]
+                                    this.$apply()
+                                    this.setDefaultAddress(id)
+                                }
+                                for(var i=0;i<this.sendinfo.length;i++){
+                                    if(this.sendinfo[i].id == id){
+                                        this.sendinfo[i] = res.data.data
+                                    }
+                                }
+                                this.$apply()
+                            }else{
+                                tip.error(res.data.msg)
+                            }
+                        }
+                    })
+                }else{
+                    this.sendinfo.length==0?this.Checked = true:''
+                    wepy.request({
+                        url:HOST_URL+'/sender/save',
+                        method: 'POST',
+                        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        data:{'openid':user_info.openId,'sender':sender,'phone':phone},
+                        complete:(res)=>{
+                            if(res.data.code==0){
+                                let id = res.data.data.id
+                                if(this.Checked){
+                                    this.setDefaultAddress(id)
+                                }
+                                this.sendinfo=[]
+                                this.page=1
+                                this.totalpage=1
+                                this.getSender()
+                                this.$apply()
+                            }else{
+                                tip.error(res.data.msg)
+                            }
+                        }
+                    })
+                }
+                this.clearInput()
+                tip.loaded()
+            },
+            tapSelAddress(e) {
+                var id = e.currentTarget.dataset.id;
+                wepy.setStorageSync('sender',id);
+                wepy.redirectTo({
+                    url: "/pages/comfire_order?from=sendAdd"
+                })
+            },
+            editAddress(e){
+                let index = e.currentTarget.dataset.index
+                this.id = e.currentTarget.dataset.id
+                this.sender = this.sendinfo[index].sender
+                this.phone = this.sendinfo[index].phone
+                this.flag = 'edit'
+                this.$apply()
+                if (wx.pageScrollTo) {
+                    wx.pageScrollTo({
+                        scrollTop: 0
+                    })
+                }else{
+                    tip.alert('请到顶部修改信息')
+                }
+            },
+            delAddress(e){
+                let index = e.currentTarget.dataset.index
+                let id = e.currentTarget.dataset.id
+                this.delSendAddress(id,index)
+            },
+            setDefault(e){
+                this.Checked = !this.Checked
+                this.$apply()
+            }
+        }
+    }
+
+</script>
+
+<style lang="less">
+    page{
+        background:#f7f7f7;
+    }
+    .top{
+        width: 97%;
+        background-color: #fff;
+        margin: 30rpx auto;
+        border-radius:22rpx;
+        font-size: 34rpx;
+        overflow: hidden;
+        color: #000;
+        .info{
+            display: flex;
+            width: 95%;
+            height: 70rpx;
+            line-height: 70rpx;
+            margin: 10rpx auto;
+            border-bottom: solid #e7e7e7 3rpx;
+            .default{
+                margin-top: 7rpx;
+                font-size: 34rpx;
+            }
+            .infoname{
+                color: #ff0100;
+                margin-right: 20rpx;
+            }
+            .inforealname{
+                height: 60rpx;
+                text-align: left;
+                border-right: solid #e7e7e7 3rpx;
+            }
+            .infophone{
+                margin-left: 20rpx;
+            }
+            .infodefault{
+                margin: -10rpx 20rpx;
+            }
+
+
+        }
+        .submitbutton{
+            width: 95%;
+            text-align: center;
+            margin: 25rpx auto;
+            font-size: 33rpx;
+            color: white;
+            .submit{
+                background-color: #fe0000;
+                color: white;
+                padding-top: 15rpx;
+                padding-bottom: 15rpx;
+                font-weight: 600;
+                line-height: 55rpx;
+                border-radius: 7rpx;
+            }
+        }
+    }
+    .center{
+        width: 100%;
+        background-color: #000;
+        padding: 15rpx auto;
+        height: 70rpx;
+        overflow: hidden;
+        .searchinput{
+            display: flex;
+            float: left;
+            margin: 10rpx 0rpx 10rpx 0rpx;
+            width: 74%;
+            background-color: #fff;
+            border-radius: 22rpx;
+            .placeholderfont{
+                color: #b1b1b1;
+                font-size: 28rpx;
+                margin-left: 70rpx;
+            }
+        }
+        .identification{
+            width:10%;
+            float:left;
+            color:white;
+            line-height:70rpx;
+            font-size:32rpx;
+            margin-left:10rpx;
+        }
+        .searchbutton{
+            width:10%;
+            color:white;
+            margin-left:655rpx;
+            line-height:70rpx;
+            font-size:31rpx;
+        }
+    }
+    .reclist{
+
+    }
+    .address{
+        width: 97%;
+        background-color: #e6e6e6;
+        margin: 5rpx auto;
+        font-size: 34rpx;
+        overflow: hidden;
+        border-radius:22rpx;
+    }
+    .add{
+        height: 100rpx;
+        display: block;
+        width: 95%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        bottom: 20rpx;
+        margin: 0 auto;
+    }
+    .button{
+        text-align: center;
+        line-height: 100rpx;
+    }
+    .redDefault{
+        margin-top: 23rpx;
+        margin-left: 15rpx;
+        float: left;
+        color: #fe0000;
+    }
+    .addAndphone{
+        display: flex;
+        margin-top: 25rpx;
+        margin-left: 30rpx;
+        margin-bottom: 25rpx;
+        float: left;
+        text-align: center;
+        .realname{
+            display: flex;;
+            margin-left: 25rpx;
+        }
+    }
+    .nickname{
+        display: flex;
+        margin-top: 20rpx;
+        width: 400rpx;
+        margin-left: 30rpx;
+        .nickname1{
+            float: left;
+            width: 200rpx;
+            margin-left: 30rpx;
+        }
+    }
+    .address_detail{
+        margin: 10rpx 40rpx 10rpx 30rpx;
+        float: left;
+    }
+    .addinfo{
+        margin: auto 0;
+        height: 125rpx;
+    }
+    .addressbutton{
+        float: right;
+        margin-bottom: 10rpx;
+        image{
+            width:40rpx;
+            height:40rpx;
+        }
+        .addbutton{
+            margin-right: 20rpx;
+            text-align: center;
+            color: white;
+            float: left;
+            width: 100rpx;
+            font-size: 30rpx;
+        }
+    }
+    .reclist-itm{
+        position: relative;
+        color:#696969;
+    }
+    .addressbutton{
+        position:absolute;
+        top:24rpx;
+        right:0;
+    }
+</style>

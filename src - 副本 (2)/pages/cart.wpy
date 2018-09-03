@@ -1,0 +1,27 @@
+<template>
+    <view class="pagebackground">
+        <shopCart :List.sync=""></shopCart>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy'
+    import ShopCart from '../components/shop_cart'
+    export default class TestShopItemList extends wepy.page{
+        config = {
+            navigationBarTitleText: '购物车',
+        }
+        data = {
+
+        }
+        components = {
+            shopCart: ShopCart
+        }
+        onShow() {
+            this.$invoke('shopCart', 'getCartListMethod');
+        }
+    }
+</script>
+<style lang="less">
+.pagebackground{
+}
+</style>

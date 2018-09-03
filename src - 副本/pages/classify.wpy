@@ -1,0 +1,290 @@
+<template>
+    <view class="top_search">
+        <image class='logo_img' src="../images/logo.png"></image>
+        <view class="search_input" @tap="goSearchShop()">
+            <input type="text" placeholder="输入商品名或 JanCode" />
+            <icon class="icon_style" type="search" size="15" color="#7b7b7b"></icon>
+        </view>
+
+        <i class="text_font">搜索</i>
+    </view>
+    <view class="classify_style">
+        <scroll-view class="left_classify" scroll-y scroll-with-animation="true" style="height:{{windowHeight-50}}px" >
+            <view class="name {{item.id == active_code ? 'active':''}}" wx:for="{{rootcateList}}" wx:key="item" @tap="changeCate" data-code="{{item.id}}"><text class="classify_name">{{item.name}}</text></view>
+        </scroll-view>
+        <scroll-view class="right_classify" scroll-y scroll-with-animation="true" style="height:{{windowHeight-50}}px" bindscrolltolower="getShopList()">
+            <view class="child_shop" wx:for="{{childcateList}}" wx:for-item="item" wx:key="index">
+                <view class="shop_cart" @tap="cartAdd({{item.id}})"><image class="cart_style" src="../images/addcart.png"></image></view>
+                <navigator url="/pages/shop_detail?id={{item.id}}">
+                <image class="shop_img" src="{{item.shop_image}}"></image>
+                <view class="shop_name">{{item.shop_name}}</view>
+                <view class="shop_price">关税:￥{{item.bc_price}} 供货价:￥{{item.shop_gprice}}</view>
+                </navigator>
+            </view>
+        </scroll-view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+import tip from '@/utils/tip';
+import {
+    HOST_URL,
+    IMG_URL
+} from '@/utils/constant';
+
+export default class  Classify extends wepy.page {
+    config = {
+        navigationBarTitleText: '分类页面',
+    }
+    components = {
+
+    }
+
+    async getChildCate(code){
+        for(var i=0; i <this.demodate.length;i++){
+            if(this.demodate[i].code == code){
+                this.childcateList = this.demodate[i].list;
+            }
+        }
+        this.$apply();
+    }
+
+    data = {
+        rootcateList:[],
+        childcateList:{},
+        windowHeight:0,
+        active_code:0,
+        page:0,
+        totalpage:1,
+        page:[]
+        }
+    onLoad() {
+        this.getCateList();
+        this.windowHeight = wepy.getStorageSync('systemInfo').windowHeight
+        this.$apply()
+    }
+    async getCateList(){
+        let that = this
+        tip.loading()
+        await wepy.request({
+            url:HOST_URL+'cate/list',
+            method:'GET',
+            data:{},
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code == 0){
+                    that.rootcateList = res.data.data;
+                    if(that.active_code==0){
+                        that.getShopList(res.data.data[0].id)
+//                    for(var a = 0;a<res.data.cateList.length;a++){
+//                        that.page[a]=0;
+//                    }
+//                    that.page[0] = 1;
+                    }
+                    that.active_code = res.data.data[0].id
+                    that.$apply();
+                }else{
+                    tip.error('加载错误')
+                }
+
+            }
+        })
+        tip.loaded()
+    }
+    async getShopList(id){
+        let that = this
+        that.active_code?id=that.active_code:id
+        if(that.page>=that.totalpage){
+            console.log('fanhui')
+            return 1
+        }
+        tip.loading()
+        that.page++
+        await wepy.request({
+            url:HOST_URL+'shop/findByCateId',
+            method:'GET',
+            data:{'id':id,
+                'page':that.page,
+                'size':that.size ||10
+            },
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            complete:(res)=>{
+                if(res.data.code == 0 && res.data.data.shopList.length>0) {
+                    if (that.page > 1) {
+                        that.childcateList = [...that.childcateList, ...res.data.data.shopList];
+                    } else {
+                        that.childcateList = res.data.data.shopList;
+                    }
+                    that.totalpage = res.data.data.totalpage
+                    that.$apply();
+                }else{
+                    that.totalpage =1
+                    that.childcateList = []
+                    that.$apply()
+                    tip.error('没有信息')
+                }
+            }
+        })
+        tip.loaded()
+    }
+    async getShop(){
+        let page = this.page
+        if((page+1)<=this.totalPage){
+            this.getShopList(this.active_code)
+        }
+    }
+    onShow(){
+
+    }
+    methods = {
+        //设置一级分类选中状态
+        changeCate(e){
+            let id = e.currentTarget.dataset.code;
+            console.log(id)
+            console.log(this.active_code)
+            if(id == this.active_code){
+                return ''
+            }
+            //设置一级分类的选中状态
+            this.active_code = id;
+            this.page = 0
+            this.totalPage = 1
+            this.getShopList(id)
+            this.$apply();
+        },
+        cartAdd(id){
+            tip.loading()
+            let userid = wepy.getStorageSync('USER_INFO')
+            let data = {'openid':userid.openId,'productId':id};
+            wepy.request({
+                url: HOST_URL+'cart/add',
+                method:'POST',
+                data:data,
+                header: { 'content-type': 'application/x-www-form-urlencoded'},
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        tip.success('加购成功');
+                    }else{
+                        tip.error(res.data.msg);
+                    }
+                }
+            })
+            tip.loaded()
+        },
+        goSearchShop () {
+            wepy.navigateTo({
+                url: 'search_shop'
+            })
+        }
+    }
+}
+</script>
+<style lang="less">
+.top_search {
+    width: 100%;
+    background-color: black;
+    height: 100rpx;
+    font-size: 30rpx;
+    position:fixed;
+    top:0;
+    width: 100%;
+    z-index: 999;
+}
+.logo_img {
+    height: 60rpx;
+    width: 60rpx;
+    margin: 20rpx 20rpx 20rpx 30rpx;
+}
+.search_input {
+    position:absolute;
+	margin:-80rpx 0 0 100rpx;
+	width:547rpx;
+	height:60rpx;
+	background-color:#f1f1f1;
+	border-radius:40rpx;
+	border:none;
+  }
+  .search_input input{
+  	width:210px;
+	float:left;
+	margin-left:22px;
+	font-size:31rpx;
+	line-height:34rpx;
+	margin-top:5rpx;
+  }
+  .icon_style {
+    float:right;
+	margin-top:14rpx;
+	margin-right:22rpx;
+  }
+  .text_font {
+    font-size:32rpx;
+	color:#e6e6e6;
+	position:absolute;
+	margin:30rpx 20rpx auto 550rpx;
+  }
+.classify_style {
+    display: flex;
+    position: relative;
+    margin-top: 100rpx;
+    .left_classify{
+        text-align: center;
+        width: 200rpx;
+        height: 1010rpx;
+        background-color: #fbfbfb;
+        .name {
+            padding-top:20rpx;
+            padding-bottom: 20rpx;
+            font-size: 32rpx;
+        }
+        .active {
+            color: red;
+            background-color: #fff;
+            border-left:5rpx red solid;
+        }
+    }
+    .right_classify{
+        height: 970rpx;
+        padding: 10px 0px 10px 0px;
+        background-color: white;
+        .child_shop{
+            float: left;
+            position: relative;
+            width: 280rpx;
+            margin-bottom: 15rpx;
+            box-shadow: 0rpx 0rpx 5rpx #ccc;
+            margin-left:9rpx;
+            margin-right:9rpx;
+          .shop_img{
+                height: 250rpx;
+                width: 250rpx;
+            }
+            .shop_name{
+                text-align: center;
+                font-size: 25rpx;
+                font-weight: 800;
+                overflow:hidden; //超出一行文字自动隐藏
+                text-overflow:ellipsis;//文字隐藏后添加省略号
+                white-space:nowrap;
+            }
+            .shop_price{
+                text-align: center;
+                font-size: 22rpx;
+            }
+        }
+    }
+}
+.shop_cart{
+    position:absolute;
+    height: 0rpx;
+    width: 0rpx;
+    margin:156rpx 0 0 156rpx;
+    border-style: solid;
+    border-width: 50rpx;
+    border-color: transparent rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) transparent;
+}
+.cart_style{
+    height: 45rpx;
+    width: 45rpx;
+}
+</style>

@@ -1,0 +1,100 @@
+<template>
+
+<repeat for="{{ goodsList }}" key="index" index="index" item="item">
+
+    <view class="shopimg">
+        <view class="shop_cart" @tap="addCart({{item.id}})"><image class="cart_style" src="../images/addcart.png"></image></view>
+        <navigator open-type="navigate" url="/pages/shop_detail?id={{item.id}}">
+        <view><image class="image2" src="{{item.shop_image}}"></image></view>
+        <view class="title">{{item.shop_name}}</view>
+        <view class="price">关税: ￥{{item.bc_cprice}}  供货价: ￥{{item.shop_gprice}}</view>
+        </navigator>
+    </view>
+
+</repeat>
+
+</template>
+<script>
+import wepy from 'wepy';
+import tip from '@/utils/tip';
+import {
+    HOST_URL,
+    IMG_URL
+} from '@/utils/constant';
+export default class ShopItemList extends wepy.component{
+    props = {
+        goodsList: {
+            default: []
+        }
+    }
+    methods = {
+        addCart(id){
+            tip.loading()
+            let userid = wepy.getStorageSync('USER_INFO')
+            let data = {'openid':userid.openId,'productId':id};
+            wepy.request({
+                url: HOST_URL+'cart/add',
+                method:'POST',
+                data:data,
+                header: { 'content-type': 'application/x-www-form-urlencoded'},
+                complete:(res)=>{
+                    if(res.data.code==0){
+                        tip.success('加购成功');
+                    }else{
+                        tip.error(res.data.msg);
+                    }
+                }
+            })
+            tip.loaded()
+        }
+    }
+}
+
+</script>
+<style lang="less">
+.total_style{
+    background-color: #f7f7f7;
+    width: 100%;
+    overflow:hidden
+}
+.shopimg {
+    float:left;
+	text-align:center;
+	margin-left:1.1%;
+	margin-right:1.1%;
+	margin-top:0.5em;
+	margin-bottom:0.5em;
+	width:47.8%;
+	background-color:#fff;
+	box-shadow:0rpx 0rpx 5rpx #ccc;
+    .image2 {
+        height:300rpx;
+        width: 300rpx;
+        margin-top:5rpx;
+        border-radius:7rpx
+    }
+}
+.title {
+    font-size: 25rpx;
+    font-weight: 800;
+    overflow:hidden; //超出一行文字自动隐藏
+    text-overflow:ellipsis;//文字隐藏后添加省略号
+    white-space:nowrap;
+}
+.price {
+    font-size: 22rpx;
+}
+    .shop_cart{
+        position:absolute;
+        height: 0rpx;
+        width: 0rpx;
+        margin:188rpx 0 0 196rpx;
+        border-style: solid;
+        border-width: 60rpx;
+        border-color: transparent rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) transparent;
+    }
+    .cart_style{
+        height: 55rpx;
+        width: 55rpx;
+    }
+</style>
