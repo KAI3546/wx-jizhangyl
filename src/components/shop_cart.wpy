@@ -22,8 +22,13 @@
             </view>
         </repeat>
     </view>
+<<<<<<< HEAD
     <view class="shoptips" wx:if="{{shopCartList.length == 0}}">
         <view class="shopCart-tips">
+=======
+    <view class="shoptips">
+    	<view class="shopCart-tips">
+>>>>>>> ef20348550282df640e5cad23f20a43b503c9bc8
         <image src="../images/shoptips.png" />
         <text>购物车里还没有商品</text>
       </view>
@@ -424,8 +429,13 @@ export default class ShopCart extends wepy.component{
         gotoStop(){
           wepy.switchTab({
             url: '/pages/index'
+<<<<<<< HEAD
         })
 }
+=======
+          })
+        }
+>>>>>>> ef20348550282df640e5cad23f20a43b503c9bc8
     }
 }
 </script>
@@ -588,6 +598,44 @@ export default class ShopCart extends wepy.component{
     position: absolute;
     margin-top: 70rpx;
     width: 100%;
+}
+.shoptips{
+  text-align:center;
+  padding-top:2em;
+  position:absolute;
+  margin-top:70rpx;
+  width:80%;
+  left:10%;
+  right:10%;
+  .shopCart-tips{
+      width: 100%;
+      text-align: center;
+      text{
+        display:inline-block;
+        width:100%;
+        text-align:center;
+        font-weight:600;
+        color:#e6e6e6;
+      }
+    }
+    image{
+      display: inline-block;
+      width:250rpx;
+      height:250rpx;
+    }
+    .shop-btn{
+      background-color:#ff4242;
+      border-radius:7rpx;
+      color:white;
+      padding:15rpx 32rpx;
+      text-align:center;
+      text-decoration:none;
+      display:inline-block;
+      font-size:35rpx;
+      width:158rpx;
+      line-height:35rpx;
+      margin-top:2em;
+    }
 }
 .totalInfo{
   width:100%;
